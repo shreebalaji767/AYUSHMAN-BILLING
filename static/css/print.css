@@ -1,0 +1,924 @@
+@media print {
+
+/* ============================================================
+   AYUSHMAN BILLING
+   COMPLETE PRINT STYLESHEET
+   File:
+   D:\AYUSHMAN BILLING\static\css\print.css
+============================================================ */
+
+
+/* ============================================================
+   PAGE SETUP
+============================================================ */
+
+@page {
+    size: A4 portrait;
+
+    /*
+       Keep page margins small because the hospital
+       letterhead/header/footer space is handled separately.
+    */
+    margin: 0;
+}
+
+
+/* ============================================================
+   GLOBAL PRINT RESET
+============================================================ */
+
+* {
+    box-sizing: border-box;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+
+html,
+body {
+    width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+
+    color: #000000 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 9px !important;
+
+    line-height: 1.15 !important;
+}
+
+
+/* ============================================================
+   HIDE SCREEN-ONLY ELEMENTS
+============================================================ */
+
+.no-print,
+.topbar-actions,
+.bottom-actions,
+.delete-row,
+.add-row,
+.action-column,
+.action-cell,
+button {
+    display: none !important;
+}
+
+
+/* ============================================================
+   MAIN PRINT PAGE
+============================================================ */
+
+.app-shell {
+    width: 100% !important;
+
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #ffffff !important;
+}
+
+
+.page-container {
+    width: 100% !important;
+
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    padding: 0 12mm !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   LETTERHEAD HEADER SPACE
+============================================================ */
+
+/*
+   Change this height according to the actual hospital
+   letterhead header.
+
+   Example:
+   35mm = approximately 1.38 inch.
+*/
+
+.print-header-space {
+    display: block !important;
+
+    width: 100% !important;
+
+    height: 35mm !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* ============================================================
+   LETTERHEAD FOOTER SPACE
+============================================================ */
+
+.print-footer-space {
+    display: block !important;
+
+    width: 100% !important;
+
+    height: 25mm !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* ============================================================
+   SECTION CARDS
+============================================================ */
+
+.section-card {
+    width: 100% !important;
+
+    margin: 0 0 4px 0 !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   SECTION TITLES
+============================================================ */
+
+.section-title {
+    margin: 0 0 3px 0 !important;
+
+    padding: 2px 0 !important;
+
+    border-bottom:
+        1px solid #000000 !important;
+
+    color: #000000 !important;
+
+    font-size: 9px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.1 !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 0 !important;
+}
+
+
+/* ============================================================
+   PATIENT INFORMATION
+   SINGLE SPACING
+============================================================ */
+
+.patient-grid {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        1fr 1fr !important;
+
+    gap: 0 !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+}
+
+
+/* ============================================================
+   PATIENT FIELD
+============================================================ */
+
+.patient-grid .form-field {
+    display: grid !important;
+
+    grid-template-columns:
+        105px minmax(0, 1fr) !important;
+
+    align-items: center !important;
+
+    gap: 3px !important;
+
+    min-width: 0 !important;
+
+    min-height: 18px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+}
+
+
+/* ============================================================
+   WIDE PATIENT FIELD
+============================================================ */
+
+.patient-grid .form-field.wide {
+    grid-column: span 2 !important;
+}
+
+
+/* ============================================================
+   PATIENT LABEL
+============================================================ */
+
+.patient-grid .form-field label {
+    display: block !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    color: #000000 !important;
+
+    font-size: 8px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.05 !important;
+
+    text-align: right !important;
+
+    white-space: nowrap !important;
+}
+
+
+/* ============================================================
+   PATIENT INPUT
+============================================================ */
+
+.patient-grid .form-field input,
+.patient-grid .form-field textarea {
+    width: 100% !important;
+
+    height: 18px !important;
+
+    min-height: 18px !important;
+
+    margin: 0 !important;
+
+    padding: 1px 3px !important;
+
+    border: 0 !important;
+
+    border-radius: 0 !important;
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+    color: #000000 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 8px !important;
+
+    line-height: 1.05 !important;
+
+    text-align: left !important;
+}
+
+
+/* ============================================================
+   BILLING SECTION
+============================================================ */
+
+.billing-section {
+    width: 100% !important;
+
+    margin: 3px 0 0 0 !important;
+
+    padding: 0 !important;
+}
+
+
+/* ============================================================
+   TABLE WRAPPER
+============================================================ */
+
+.table-container,
+.table-wrapper {
+    width: 100% !important;
+
+    overflow: visible !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    border-radius: 0 !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   BILLING TABLE
+============================================================ */
+
+#billingTable {
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border-collapse: collapse !important;
+
+    border-spacing: 0 !important;
+
+    table-layout: fixed !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   TABLE HEADER
+============================================================ */
+
+#billingTable thead {
+    display: table-header-group !important;
+}
+
+
+#billingTable thead th {
+    height: auto !important;
+
+    padding: 4px 2px !important;
+
+    border:
+        1px solid #000000 !important;
+
+    background: #eeeeee !important;
+
+    color: #000000 !important;
+
+    font-size: 7px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.05 !important;
+
+    text-align: center !important;
+
+    vertical-align: middle !important;
+
+    white-space: normal !important;
+
+    word-wrap: break-word !important;
+}
+
+
+/* ============================================================
+   TABLE BODY
+============================================================ */
+
+#billingTable tbody {
+    display: table-row-group !important;
+}
+
+
+#billingTable tbody tr {
+    page-break-inside: avoid !important;
+
+    break-inside: avoid !important;
+}
+
+
+#billingTable tbody td {
+    height: auto !important;
+
+    min-height: 20px !important;
+
+    padding: 2px 2px !important;
+
+    border:
+        1px solid #000000 !important;
+
+    background: #ffffff !important;
+
+    color: #000000 !important;
+
+    font-size: 7px !important;
+
+    line-height: 1.05 !important;
+
+    vertical-align: middle !important;
+
+    word-wrap: break-word !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* ============================================================
+   REMOVE SCREEN HOVER EFFECTS
+============================================================ */
+
+#billingTable tbody tr:hover td {
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   TABLE INPUTS
+   PRINT AS CLEAN TEXT
+============================================================ */
+
+#billingTable input[type="text"],
+#billingTable input[type="number"] {
+    width: 100% !important;
+
+    height: auto !important;
+
+    min-height: 14px !important;
+
+    margin: 0 !important;
+
+    padding: 1px 2px !important;
+
+    border: 0 !important;
+
+    border-radius: 0 !important;
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+    color: #000000 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 7px !important;
+
+    line-height: 1.05 !important;
+
+    text-align: left !important;
+}
+
+
+/* ============================================================
+   NUMERIC / MONEY COLUMNS
+============================================================ */
+
+#billingTable td:nth-child(4) input,
+#billingTable td:nth-child(5) input,
+#billingTable td:nth-child(6) input,
+#billingTable td:nth-child(7) input,
+#billingTable td:nth-child(8) input,
+#billingTable td:nth-child(9) input,
+#billingTable td:nth-child(10) input {
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   COLUMN WIDTHS
+============================================================ */
+
+/*
+   12 columns:
+   # | Package Code | Package Type | Procedure Cost |
+   Stratification Cost | Qty | Package Cost | Adj. Factor |
+   Incentives | Total Amount | Remarks | Action
+*/
+
+#billingTable th:nth-child(1),
+#billingTable td:nth-child(1) {
+    width: 3% !important;
+}
+
+
+#billingTable th:nth-child(2),
+#billingTable td:nth-child(2) {
+    width: 9% !important;
+}
+
+
+#billingTable th:nth-child(3),
+#billingTable td:nth-child(3) {
+    width: 10% !important;
+}
+
+
+#billingTable th:nth-child(4),
+#billingTable td:nth-child(4) {
+    width: 9% !important;
+}
+
+
+#billingTable th:nth-child(5),
+#billingTable td:nth-child(5) {
+    width: 10% !important;
+}
+
+
+#billingTable th:nth-child(6),
+#billingTable td:nth-child(6) {
+    width: 5% !important;
+}
+
+
+#billingTable th:nth-child(7),
+#billingTable td:nth-child(7) {
+    width: 9% !important;
+}
+
+
+#billingTable th:nth-child(8),
+#billingTable td:nth-child(8) {
+    width: 7% !important;
+}
+
+
+#billingTable th:nth-child(9),
+#billingTable td:nth-child(9) {
+    width: 8% !important;
+}
+
+
+#billingTable th:nth-child(10),
+#billingTable td:nth-child(10) {
+    width: 9% !important;
+}
+
+
+#billingTable th:nth-child(11),
+#billingTable td:nth-child(11) {
+    width: 11% !important;
+}
+
+
+#billingTable th:nth-child(12),
+#billingTable td:nth-child(12) {
+    display: none !important;
+}
+
+
+/* ============================================================
+   BILLING TOTALS
+   RIGHT ALIGNED
+============================================================ */
+
+.billing-totals,
+.totals-section {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin:
+        5px 0 0 auto !important;
+
+    padding: 0 !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   BILLING TOTAL ROW
+============================================================ */
+
+.billing-total-row,
+.total-row {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        180px !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    min-height: 22px !important;
+
+    margin: 0 !important;
+
+    padding: 2px 0 !important;
+
+    border-bottom:
+        1px solid #bbbbbb !important;
+
+    background: #ffffff !important;
+}
+
+
+/* ============================================================
+   TOTAL LABEL
+============================================================ */
+
+.billing-total-row > span,
+.billing-total-row > label,
+.total-row > span,
+.total-row > label {
+    display: block !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    color: #000000 !important;
+
+    font-size: 8px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.05 !important;
+
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   TOTAL VALUES
+============================================================ */
+
+.billing-total-row strong {
+    display: block !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    color: #000000 !important;
+
+    font-size: 9px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.05 !important;
+
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   EDITABLE TOTAL INPUTS
+============================================================ */
+
+.billing-total-row input[type="text"],
+.billing-total-row input[type="number"],
+.total-row input[type="text"],
+.total-row input[type="number"] {
+    width: 100% !important;
+
+    height: 18px !important;
+
+    min-height: 18px !important;
+
+    margin: 0 !important;
+
+    padding: 1px 3px !important;
+
+    border: 0 !important;
+
+    border-radius: 0 !important;
+
+    outline: none !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+
+    color: #000000 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 8px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.05 !important;
+
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   PAYABLE TOTAL
+============================================================ */
+
+.payable-row,
+.payable-total {
+    border-top:
+        1px solid #000000 !important;
+
+    border-bottom:
+        2px solid #000000 !important;
+
+    background: #ffffff !important;
+}
+
+
+.payable-row span,
+.payable-row label,
+.payable-total label {
+    color: #000000 !important;
+
+    font-size: 8px !important;
+
+    font-weight: 900 !important;
+}
+
+
+.payable-row strong,
+.payable-total input {
+    color: #000000 !important;
+
+    font-size: 10px !important;
+
+    font-weight: 900 !important;
+}
+
+
+/* ============================================================
+   e-RUPI
+============================================================ */
+
+#eRupiAmount {
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   MISCELLANEOUS
+============================================================ */
+
+#miscellaneousAmount {
+    text-align: right !important;
+}
+
+
+/* ============================================================
+   BILL REMARKS
+============================================================ */
+
+#billRemarks {
+    width: 100% !important;
+
+    min-height: 25px !important;
+
+    height: auto !important;
+
+    margin: 2px 0 0 !important;
+
+    padding: 2px !important;
+
+    border:
+        1px solid #000000 !important;
+
+    border-radius: 0 !important;
+
+    background: #ffffff !important;
+
+    color: #000000 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 8px !important;
+
+    line-height: 1.1 !important;
+
+    resize: none !important;
+}
+
+
+/* ============================================================
+   SCREEN FOOTER
+============================================================ */
+
+.screen-footer {
+    display: none !important;
+}
+
+
+/* ============================================================
+   PAGE BREAK CONTROL
+============================================================ */
+
+.section-card,
+.billing-section,
+.billing-totals,
+.totals-section {
+    page-break-inside: auto !important;
+}
+
+
+.patient-grid {
+    page-break-inside: avoid !important;
+
+    break-inside: avoid !important;
+}
+
+
+.billing-totals,
+.totals-section {
+    page-break-inside: avoid !important;
+
+    break-inside: avoid !important;
+}
+
+
+/* ============================================================
+   DO NOT SPLIT IMPORTANT ROWS
+============================================================ */
+
+.billing-total-row,
+.total-row {
+    page-break-inside: avoid !important;
+
+    break-inside: avoid !important;
+}
+
+
+/* ============================================================
+   LINKS
+============================================================ */
+
+a {
+    color: #000000 !important;
+
+    text-decoration: none !important;
+}
+
+
+/* ============================================================
+   REMOVE FOCUS / HOVER EFFECTS
+============================================================ */
+
+input:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ============================================================
+   PRINT ONLY
+============================================================ */
+
+.print-only {
+    display: block !important;
+}
+
+}
+
+
+/* ============================================================
+   SCREEN DEFAULT FOR PRINT-ONLY ELEMENTS
+============================================================ */
+
+.print-only {
+    display: none;
+}

@@ -1,0 +1,29 @@
+[
+    {
+        "code": "PKG001",
+        "name": "Sample Package",
+        "type": "Procedure",
+        "procedureCost": 50000,
+        "stratificationCost": 10000,
+        "adjustmentFactor": 1,
+        "incentive": 0
+    },
+    {
+        "code": "PKG002",
+        "name": "Sample Surgery Package",
+        "type": "Surgery",
+        "procedureCost": 75000,
+        "stratificationCost": 15000,
+        "adjustmentFactor": 1,
+        "incentive": 0
+    },
+    {
+        "code": "PKG003",
+        "name": "Sample Maternity Package",
+        "type": "Maternity",
+        "procedureCost": 30000,
+        "stratificationCost": 5000,
+        "adjustmentFactor": 1,
+        "incentive": 0
+    }
+]

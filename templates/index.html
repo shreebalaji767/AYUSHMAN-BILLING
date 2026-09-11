@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Ayushman Billing</title>
+
+
+    <!-- =====================================================
+         MAIN STYLESHEET
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =====================================================
+         PRINT STYLESHEET
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/print.css') }}"
+        media="print"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     APPLICATION SHELL
+========================================================= -->
+
+<div class="app-shell">
+
+
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-brand">
+
+            <div class="brand-title">
+                AYUSHMAN BILLING
+            </div>
+
+            <div class="brand-subtitle">
+                Hospital Billing &amp; Package Management
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TOP ACTIONS
+        ================================================== -->
+
+        <div class="topbar-actions">
+
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="newBillBtn"
+            >
+                New Bill
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="addRowBtn"
+            >
+                + Add Row
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-success"
+                id="printBtn"
+            >
+                Print / PDF
+            </button>
+
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN PAGE
+    ====================================================== -->
+
+    <main class="page-container">
+
+
+        <!-- =================================================
+             PRINT HEADER SPACE
+
+             Blank area reserved for hospital letterhead.
+        ================================================== -->
+
+        <div class="print-header-space"></div>
+
+
+
+        <!-- =================================================
+             PATIENT INFORMATION
+        ================================================== -->
+
+        <section class="section-card">
+
+
+            <h2 class="section-title">
+                Patient Information
+            </h2>
+
+
+
+            <div class="patient-grid">
+
+
+                <!-- =========================================
+                     IPD NO.
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="ipdNo">
+                        IPD No.
+                    </label>
+
+                    <input
+                        type="text"
+                        id="ipdNo"
+                        name="ipdNo"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     UHID
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="uhid">
+                        UHID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="uhid"
+                        name="uhid"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     PATIENT NAME
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="patientName">
+                        Patient Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="patientName"
+                        name="patientName"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     AGE
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="age">
+                        Age
+                    </label>
+
+                    <input
+                        type="text"
+                        id="age"
+                        name="age"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     S/D/W/O
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="sdwo">
+                        S/D/W/O
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sdwo"
+                        name="sdwo"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     GENDER
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="gender">
+                        Gender
+                    </label>
+
+                    <input
+                        type="text"
+                        id="gender"
+                        name="gender"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     MARITAL STATUS
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="maritalStatus">
+                        Marital Status
+                    </label>
+
+                    <input
+                        type="text"
+                        id="maritalStatus"
+                        name="maritalStatus"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     ADMISSION
+
+                     LEFT COLUMN
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="admissionDate">
+                        Admission
+                    </label>
+
+                    <input
+                        type="text"
+                        id="admissionDate"
+                        name="admissionDate"
+                        placeholder="Date / Time"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     DIAGNOSIS
+
+                     RIGHT COLUMN
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="diagnosis">
+                        Diagnosis
+                    </label>
+
+                    <input
+                        type="text"
+                        id="diagnosis"
+                        name="diagnosis"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================================
+                     ADDRESS
+
+                     FULL WIDTH
+                ========================================== -->
+
+                <div class="form-field">
+
+                    <label for="address">
+                        Address
+                    </label>
+
+                    <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             BILLING DETAILS
+        ================================================== -->
+
+        <section class="section-card billing-section">
+
+
+            <!-- =============================================
+                 BILLING HEADER
+            ============================================== -->
+
+            <div class="section-header">
+
+
+                <h2 class="section-title">
+                    Billing Details
+                </h2>
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary add-row"
+                    id="addBillingRowBtn"
+                >
+                    + Add Row
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =============================================
+                 BILLING TABLE
+            ============================================== -->
+
+            <div class="table-container">
+
+
+                <table id="billingTable">
+
+
+                    <thead>
+
+                    <tr>
+
+
+                        <!-- # -->
+
+                        <th>
+                            #
+                        </th>
+
+
+                        <!-- PACKAGE CODE -->
+
+                        <th>
+                            Package Code
+                        </th>
+
+
+                        <!-- PACKAGE TYPE -->
+
+                        <th>
+                            Package Type
+                        </th>
+
+
+                        <!-- PROCEDURE COST -->
+
+                        <th>
+                            Procedure Cost
+                        </th>
+
+
+                        <!-- STRATIFICATION COST -->
+
+                        <th>
+                            Stratification Cost
+                        </th>
+
+
+                        <!-- QTY -->
+
+                        <th>
+                            Qty
+                        </th>
+
+
+                        <!-- PACKAGE COST -->
+
+                        <th>
+                            Package Cost
+                        </th>
+
+
+                        <!-- ADJ FACTOR -->
+
+                        <th>
+                            Adj. Factor
+                        </th>
+
+
+                        <!-- INCENTIVES -->
+
+                        <th>
+                            Incentives
+                        </th>
+
+
+                        <!-- TOTAL -->
+
+                        <th>
+                            Total Amount
+                        </th>
+
+
+                        <!-- REMARKS -->
+
+                        <th>
+                            Remarks
+                        </th>
+
+
+                        <!-- ACTION -->
+
+                        <th class="action-column">
+                            Action
+                        </th>
+
+
+                    </tr>
+
+                    </thead>
+
+
+
+                    <!-- =====================================
+                         BILLING BODY
+
+                         app.js adds rows here.
+                    ====================================== -->
+
+                    <tbody id="billingBody">
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             BILLING TOTALS
+        ================================================== -->
+
+        <section class="section-card">
+
+
+            <div class="billing-totals">
+
+
+                <h2 class="section-title">
+                    Billing Totals
+                </h2>
+
+
+
+                <!-- =========================================
+                     TOTAL PACKAGE AMOUNT
+                     FULLY EDITABLE
+                ========================================== -->
+
+                <div class="billing-total-row">
+
+
+                    <label
+                        for="totalPackageWithoutIncentives"
+                    >
+                        TOTAL PACKAGE AMOUNT (WITHOUT INCENTIVES):
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="totalPackageWithoutIncentives"
+                        name="totalPackageWithoutIncentives"
+                        value="₹0.00"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+
+                </div>
+
+
+
+                <!-- =========================================
+                     TOTAL ADJUSTED PACKAGE
+                     FULLY EDITABLE
+                ========================================== -->
+
+                <div class="billing-total-row">
+
+
+                    <label
+                        for="totalAdjustedPackageAmount"
+                    >
+                        TOTAL ADJUSTED PACKAGE AMOUNT (AS PER GUIDELINES):
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="totalAdjustedPackageAmount"
+                        name="totalAdjustedPackageAmount"
+                        value="₹0.00"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+
+                </div>
+
+
+
+                <!-- =========================================
+                     TOTAL PAYABLE
+                     FULLY EDITABLE
+                ========================================== -->
+
+                <div class="billing-total-row payable-row">
+
+
+                    <label
+                        for="totalPayableAmount"
+                    >
+                        TOTAL PAYABLE AMOUNT (AFTER INCENTIVES):
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="totalPayableAmount"
+                        name="totalPayableAmount"
+                        value="₹0.00"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+
+                </div>
+
+
+
+                <!-- =========================================
+                     e-RUPI
+                     FULLY EDITABLE
+                ========================================== -->
+
+                <div class="billing-total-row editable-total">
+
+
+                    <label for="eRupiAmount">
+                        e-RUPI Amount:
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="eRupiAmount"
+                        name="eRupiAmount"
+                        value="₹0.00"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+
+                </div>
+
+
+
+                <!-- =========================================
+                     MISCELLANEOUS
+                     FULLY EDITABLE
+                ========================================== -->
+
+                <div class="billing-total-row editable-total">
+
+
+                    <label for="miscellaneousAmount">
+                        Miscellaneous Amount:
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="miscellaneousAmount"
+                        name="miscellaneousAmount"
+                        value="₹0.00"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             REMARKS / NOTES
+
+             SCREEN ONLY.
+             print.css hides this entire section.
+        ================================================== -->
+
+        <section class="section-card remarks-section">
+
+
+            <h2 class="section-title">
+                Remarks / Notes
+            </h2>
+
+
+            <textarea
+                id="billRemarks"
+                name="billRemarks"
+                placeholder="Enter remarks or notes..."
+                spellcheck="true"
+            ></textarea>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             BOTTOM ACTIONS
+        ================================================== -->
+
+        <div class="bottom-actions">
+
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="clearBtn"
+            >
+                Clear
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="addBottomRowBtn"
+            >
+                + Add Billing Row
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-success"
+                id="bottomPrintBtn"
+            >
+                Print / Save PDF
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             PRINT FOOTER SPACE
+
+             Blank area reserved for hospital letterhead.
+        ================================================== -->
+
+        <div class="print-footer-space"></div>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         SCREEN FOOTER
+    ====================================================== -->
+
+    <footer class="screen-footer">
+
+        Ayushman Billing System
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}"
+></script>
+
+
+</body>
+
+</html>

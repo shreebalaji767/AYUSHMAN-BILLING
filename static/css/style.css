@@ -1,0 +1,1517 @@
+/* ============================================================
+   AYUSHMAN BILLING
+   COMPLETE MAIN STYLESHEET
+   File:
+   D:\AYUSHMAN BILLING\static\css\style.css
+============================================================ */
+
+
+/* ============================================================
+   GLOBAL RESET
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100%;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 13px;
+
+    color: #20262d;
+
+    background: #eef1f4;
+}
+
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   APP SHELL
+============================================================ */
+
+.app-shell {
+    width: 100%;
+    min-height: 100vh;
+
+    background: #eef1f4;
+}
+
+
+/* ============================================================
+   TOP BAR
+============================================================ */
+
+.topbar {
+    width: 100%;
+
+    min-height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding:
+        10px 20px;
+
+    background: #173b67;
+
+    color: #ffffff;
+
+    border-bottom:
+        3px solid #102d50;
+}
+
+
+/* ============================================================
+   BRAND
+============================================================ */
+
+.topbar-brand {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.brand-title {
+    margin: 0;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: .3px;
+}
+
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    font-weight: 400;
+
+    line-height: 1.1;
+
+    opacity: .82;
+}
+
+
+/* ============================================================
+   TOP ACTIONS
+============================================================ */
+
+.topbar-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 7px;
+
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    height: 34px;
+
+    min-width: 80px;
+
+    padding:
+        0 13px;
+
+    border:
+        1px solid transparent;
+
+    border-radius: 4px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        opacity .15s ease,
+        transform .05s ease;
+}
+
+
+.btn:hover {
+    opacity: .92;
+}
+
+
+.btn:active {
+    transform:
+        translateY(1px);
+}
+
+
+/* ============================================================
+   PRIMARY BUTTON
+============================================================ */
+
+.btn-primary {
+    background: #2869a5;
+
+    border-color: #2869a5;
+
+    color: #ffffff;
+}
+
+
+.btn-primary:hover {
+    background: #225b91;
+
+    border-color: #225b91;
+}
+
+
+/* ============================================================
+   SECONDARY BUTTON
+============================================================ */
+
+.btn-secondary {
+    background: #ffffff;
+
+    border-color: #c8d0d7;
+
+    color: #263442;
+}
+
+
+.btn-secondary:hover {
+    background: #f2f5f7;
+
+    border-color: #aeb8c2;
+}
+
+
+/* ============================================================
+   SUCCESS BUTTON
+============================================================ */
+
+.btn-success {
+    background: #237a4b;
+
+    border-color: #237a4b;
+
+    color: #ffffff;
+}
+
+
+.btn-success:hover {
+    background: #1c633c;
+
+    border-color: #1c633c;
+}
+
+
+/* ============================================================
+   DANGER BUTTON
+============================================================ */
+
+.btn-danger {
+    background: #b83232;
+
+    border-color: #b83232;
+
+    color: #ffffff;
+}
+
+
+.btn-danger:hover {
+    background: #982929;
+
+    border-color: #982929;
+}
+
+
+/* ============================================================
+   MAIN PAGE
+============================================================ */
+
+.page-container {
+    width: 100%;
+
+    max-width: 1700px;
+
+    margin:
+        0 auto;
+
+    padding:
+        18px 20px 30px;
+}
+
+
+/* ============================================================
+   PRINT SPACES
+
+   Hidden on screen.
+   print.css activates them when printing.
+============================================================ */
+
+.print-header-space,
+.print-footer-space {
+    display: none;
+}
+
+
+/* ============================================================
+   SECTION CARD
+============================================================ */
+
+.section-card {
+    width: 100%;
+
+    margin:
+        0 0 14px;
+
+    padding:
+        16px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #d5dbe1;
+
+    border-radius: 5px;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, .04);
+}
+
+
+/* ============================================================
+   SECTION HEADER
+============================================================ */
+
+.section-header {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+
+.section-header .section-title {
+    flex: 1;
+
+    margin:
+        0 !important;
+}
+
+
+/* ============================================================
+   SECTION TITLE
+============================================================ */
+
+.section-title {
+    margin:
+        0 0 13px;
+
+    padding:
+        0 0 8px;
+
+    border-bottom:
+        2px solid #d8dee4;
+
+    color: #263f5d;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    text-transform: uppercase;
+
+    letter-spacing: .25px;
+}
+
+
+/* ============================================================
+   PATIENT INFORMATION GRID
+============================================================ */
+
+.patient-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    column-gap: 20px;
+
+    row-gap: 9px;
+}
+
+
+/* ============================================================
+   PATIENT FORM FIELD
+============================================================ */
+
+.patient-grid .form-field {
+    width: 100%;
+
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        135px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* ============================================================
+   FULL-WIDTH PATIENT FIELD
+============================================================ */
+
+.patient-grid .form-field.wide {
+    grid-column:
+        span 2;
+}
+
+
+/* ============================================================
+   PATIENT LABEL
+============================================================ */
+
+.patient-grid .form-field label {
+    display: block;
+
+    min-width: 0;
+
+    color: #4c5864;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    line-height: 1.1;
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   PATIENT INPUT
+============================================================ */
+
+.patient-grid .form-field input {
+    width: 100%;
+
+    height: 32px;
+
+    min-width: 0;
+
+    padding:
+        5px 8px;
+
+    border:
+        1px solid #cbd2d9;
+
+    border-radius: 3px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #20262d;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 11px;
+
+    line-height: 1.2;
+
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+
+.patient-grid .form-field input:hover {
+    border-color:
+        #aeb8c2;
+}
+
+
+.patient-grid .form-field input:focus {
+    border-color:
+        #2869a5;
+
+    box-shadow:
+        inset 0 0 0 1px #2869a5;
+}
+
+
+/* ============================================================
+   BILLING SECTION
+============================================================ */
+
+.billing-section {
+    overflow:
+        hidden;
+}
+
+
+/* ============================================================
+   BILLING TABLE WRAPPER
+============================================================ */
+
+.table-container {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border:
+        1px solid #cfd5db;
+
+    background:
+        #ffffff;
+}
+
+
+/* ============================================================
+   BILLING TABLE
+============================================================ */
+
+#billingTable {
+    width: 100%;
+
+    min-width: 1450px;
+
+    margin: 0;
+
+    border-collapse:
+        collapse;
+
+    border-spacing: 0;
+
+    table-layout:
+        auto;
+
+    background:
+        #ffffff;
+}
+
+
+/* ============================================================
+   TABLE HEADER
+============================================================ */
+
+#billingTable thead th {
+    height: 40px;
+
+    padding:
+        6px 5px;
+
+    border:
+        1px solid #c8d0d8;
+
+    background:
+        #e8edf2;
+
+    color:
+        #263746;
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    line-height:
+        1.15;
+
+    text-align:
+        center;
+
+    vertical-align:
+        middle;
+
+    white-space:
+        normal;
+}
+
+
+/* ============================================================
+   TABLE BODY
+============================================================ */
+
+#billingTable tbody td {
+    height:
+        39px;
+
+    padding:
+        3px;
+
+    border:
+        1px solid #d7dde2;
+
+    background:
+        #ffffff;
+
+    color:
+        #20262d;
+
+    font-size:
+        10px;
+
+    vertical-align:
+        middle;
+}
+
+
+#billingTable tbody tr:nth-child(even) td {
+    background:
+        #fafbfc;
+}
+
+
+#billingTable tbody tr:hover td {
+    background:
+        #f2f6fa;
+}
+
+
+/* ============================================================
+   TABLE INPUTS
+
+   TEXT INPUTS ARE INTENTIONALLY USED.
+   They can contain:
+   - numbers
+   - letters
+   - currency symbols
+   - special characters
+   - text
+   - mixed values
+============================================================ */
+
+#billingTable input[type="text"],
+#billingTable input[type="number"] {
+    width:
+        100%;
+
+    height:
+        30px;
+
+    min-width:
+        0;
+
+    padding:
+        4px 6px;
+
+    border:
+        1px solid transparent;
+
+    border-radius:
+        2px;
+
+    outline:
+        none;
+
+    background:
+        transparent;
+
+    color:
+        #1d252d;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        10px;
+
+    line-height:
+        1.1;
+
+    transition:
+        border-color .15s ease,
+        background .15s ease,
+        box-shadow .15s ease;
+}
+
+
+#billingTable input[type="text"]:hover,
+#billingTable input[type="number"]:hover {
+    border-color:
+        #c3ccd4;
+
+    background:
+        #ffffff;
+}
+
+
+#billingTable input[type="text"]:focus,
+#billingTable input[type="number"]:focus {
+    border-color:
+        #2869a5;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        inset 0 0 0 1px #2869a5;
+}
+
+
+/* ============================================================
+   NUMERIC-STYLE COLUMNS
+============================================================ */
+
+#billingTable td:nth-child(4) input,
+#billingTable td:nth-child(5) input,
+#billingTable td:nth-child(6) input,
+#billingTable td:nth-child(7) input,
+#billingTable td:nth-child(8) input,
+#billingTable td:nth-child(9) input,
+#billingTable td:nth-child(10) input {
+    text-align:
+        right;
+}
+
+
+/* ============================================================
+   FIRST COLUMN
+============================================================ */
+
+#billingTable td:first-child {
+    text-align:
+        center;
+
+    font-weight:
+        700;
+}
+
+
+/* ============================================================
+   ACTION COLUMN
+============================================================ */
+
+.action-column {
+    width:
+        70px;
+
+    min-width:
+        70px;
+
+    text-align:
+        center !important;
+}
+
+
+.delete-row {
+    height:
+        27px;
+
+    padding:
+        0 8px;
+
+    border:
+        1px solid #d5a5a5;
+
+    border-radius:
+        3px;
+
+    background:
+        #fff5f5;
+
+    color:
+        #a82d2d;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        9px;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+}
+
+
+.delete-row:hover {
+    background:
+        #ffeaea;
+
+    border-color:
+        #c58b8b;
+}
+
+
+/* ============================================================
+   BILLING TOTALS CONTAINER
+============================================================ */
+
+.billing-totals {
+    width:
+        100%;
+
+    max-width:
+        1000px;
+
+    margin:
+        0 0 0 auto;
+
+    padding:
+        0;
+}
+
+
+/* ============================================================
+   BILLING TOTAL TITLE
+============================================================ */
+
+.billing-totals .section-title {
+    margin-bottom:
+        8px;
+
+    text-align:
+        right;
+}
+
+
+/* ============================================================
+   BILLING TOTAL ROW
+============================================================ */
+
+.billing-total-row {
+    width:
+        100%;
+
+    min-height:
+        46px;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(350px, 1fr)
+        300px;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    padding:
+        5px 8px;
+
+    border-bottom:
+        1px solid #e0e4e8;
+
+    background:
+        #ffffff;
+}
+
+
+/* ============================================================
+   BILLING TOTAL LABEL
+============================================================ */
+
+.billing-total-row > label,
+.billing-total-row > span {
+    display:
+        block;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+    color:
+        #35414d;
+
+    font-size:
+        10px;
+
+    font-weight:
+        800;
+
+    line-height:
+        1.25;
+
+    text-align:
+        right;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* ============================================================
+   FULLY EDITABLE BILLING TOTAL INPUTS
+
+   IMPORTANT:
+   type="text" means users can enter ANYTHING.
+
+   Examples:
+   ₹10,000
+   10000
+   ₹10,000/-
+   APPROVED
+   N/A
+   ₹10,000 + ₹500
+   10%
+   As per guidelines
+============================================================ */
+
+.billing-total-row input[type="text"] {
+
+    width:
+        100%;
+
+    height:
+        34px;
+
+    padding:
+        5px 9px;
+
+    border:
+        1px solid #c8d0d7;
+
+    border-radius:
+        3px;
+
+    background:
+        #ffffff;
+
+    color:
+        #18212a;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    text-align:
+        right;
+
+    outline:
+        none;
+
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+
+.billing-total-row input[type="text"]:hover {
+    border-color:
+        #aeb8c2;
+}
+
+
+.billing-total-row input[type="text"]:focus {
+
+    border-color:
+        #2869a5;
+
+    box-shadow:
+        inset 0 0 0 1px #2869a5;
+}
+
+
+/* ============================================================
+   OPTIONAL NUMBER INPUT SUPPORT
+============================================================ */
+
+.billing-total-row input[type="number"] {
+
+    width:
+        100%;
+
+    height:
+        34px;
+
+    padding:
+        5px 9px;
+
+    border:
+        1px solid #c8d0d7;
+
+    border-radius:
+        3px;
+
+    background:
+        #ffffff;
+
+    color:
+        #18212a;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    text-align:
+        right;
+
+    outline:
+        none;
+}
+
+
+.billing-total-row input[type="number"]:focus {
+
+    border-color:
+        #2869a5;
+
+    box-shadow:
+        inset 0 0 0 1px #2869a5;
+}
+
+
+/* ============================================================
+   PAYABLE ROW
+============================================================ */
+
+.billing-total-row.payable-row {
+
+    margin-top:
+        3px;
+
+    background:
+        #f1f7f3;
+
+    border-top:
+        2px solid #518367;
+
+    border-bottom:
+        2px solid #518367;
+}
+
+
+.billing-total-row.payable-row > label,
+.billing-total-row.payable-row > span {
+
+    color:
+        #1f4d31;
+
+    font-size:
+        11px;
+
+    font-weight:
+        900;
+}
+
+
+.billing-total-row.payable-row input[type="text"] {
+
+    font-size:
+        14px;
+
+    font-weight:
+        900;
+
+    border-color:
+        #a9c5b2;
+
+    background:
+        #ffffff;
+}
+
+
+/* ============================================================
+   EDITABLE TOTALS
+============================================================ */
+
+.editable-total {
+    background:
+        #ffffff;
+}
+
+
+/* ============================================================
+   REMARKS / NOTES
+============================================================ */
+
+.remarks-section textarea {
+
+    display:
+        block;
+
+    width:
+        100%;
+
+    min-height:
+        90px;
+
+    padding:
+        8px;
+
+    border:
+        1px solid #cbd2d9;
+
+    border-radius:
+        3px;
+
+    outline:
+        none;
+
+    background:
+        #ffffff;
+
+    color:
+        #20262d;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        11px;
+
+    line-height:
+        1.3;
+
+    resize:
+        vertical;
+}
+
+
+.remarks-section textarea:hover {
+
+    border-color:
+        #aeb8c2;
+}
+
+
+.remarks-section textarea:focus {
+
+    border-color:
+        #2869a5;
+
+    box-shadow:
+        inset 0 0 0 1px #2869a5;
+}
+
+
+/* ============================================================
+   BOTTOM ACTIONS
+============================================================ */
+
+.bottom-actions {
+
+    width:
+        100%;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        7px;
+
+    margin:
+        4px 0 25px;
+}
+
+
+/* ============================================================
+   SCREEN FOOTER
+============================================================ */
+
+.screen-footer {
+
+    width:
+        100%;
+
+    padding:
+        12px;
+
+    border-top:
+        1px solid #d2d8de;
+
+    background:
+        #ffffff;
+
+    color:
+        #6d7781;
+
+    font-size:
+        10px;
+
+    text-align:
+        center;
+}
+
+
+/* ============================================================
+   FOCUS ACCESSIBILITY
+============================================================ */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+
+    outline:
+        2px solid #2869a5;
+
+    outline-offset:
+        1px;
+}
+
+
+/* ============================================================
+   TABLET
+============================================================ */
+
+@media (max-width: 1100px) {
+
+    .page-container {
+        padding:
+            14px;
+    }
+
+
+    .patient-grid {
+        column-gap:
+            12px;
+    }
+
+
+    .patient-grid .form-field {
+        grid-template-columns:
+            115px
+            minmax(0, 1fr);
+
+        gap:
+            6px;
+    }
+
+
+    .billing-totals {
+        max-width:
+            100%;
+    }
+
+
+    .billing-total-row {
+        grid-template-columns:
+            minmax(300px, 1fr)
+            260px;
+    }
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 700px) {
+
+    .topbar {
+
+        flex-direction:
+            column;
+
+        align-items:
+            stretch;
+
+        padding:
+            10px 12px;
+    }
+
+
+    .topbar-actions {
+
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        width:
+            100%;
+    }
+
+
+    .topbar-actions .btn {
+
+        width:
+            100%;
+
+        min-width:
+            0;
+
+        padding:
+            0 7px;
+
+        font-size:
+            10px;
+    }
+
+
+    .page-container {
+
+        padding:
+            8px;
+    }
+
+
+    .section-card {
+
+        padding:
+            11px;
+    }
+
+
+    .patient-grid {
+
+        grid-template-columns:
+            1fr;
+
+        row-gap:
+            8px;
+    }
+
+
+    .patient-grid .form-field {
+
+        grid-template-columns:
+            105px
+            minmax(0, 1fr);
+
+        gap:
+            6px;
+    }
+
+
+    .patient-grid .form-field.wide {
+
+        grid-column:
+            span 1;
+    }
+
+
+    .billing-total-row {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            6px;
+
+        padding:
+            8px;
+    }
+
+
+    .billing-total-row > label,
+    .billing-total-row > span {
+
+        text-align:
+            right;
+    }
+
+
+    .bottom-actions {
+
+        display:
+            grid;
+
+        grid-template-columns:
+            1fr;
+
+        width:
+            100%;
+    }
+
+
+    .bottom-actions .btn {
+
+        width:
+            100%;
+    }
+
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+============================================================ */
+
+@media (max-width: 450px) {
+
+    .brand-title {
+
+        font-size:
+            16px;
+    }
+
+
+    .brand-subtitle {
+
+        font-size:
+            9px;
+    }
+
+
+    .topbar-actions {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .patient-grid .form-field {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .patient-grid .form-field label {
+
+        text-align:
+            left;
+    }
+
+
+    .billing-total-row > label,
+    .billing-total-row > span {
+
+        text-align:
+            left;
+    }
+
+
+    .billing-total-row input[type="text"] {
+
+        text-align:
+            right;
+    }
+
+}
+
+
+/* ============================================================
+   PRINT FALLBACK
+
+   The dedicated print.css handles the actual print layout.
+============================================================ */
+
+@media print {
+
+    html,
+    body {
+
+        background:
+            #ffffff !important;
+    }
+
+
+    .topbar-actions,
+    .bottom-actions,
+    .screen-footer {
+
+        display:
+            none !important;
+    }
+
+
+    .remarks-section {
+
+        display:
+            none !important;
+    }
+
+}
