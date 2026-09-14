@@ -107,3 +107,9 @@ data/packages.json
 This is package master information only.
 
 It does not contain patient billing records.
+
+## 🚀 Live Demo
+
+🌐 **[Open Ayushman Billing Online](https://ayushman-billing.onrender.com/)**
+
+> Access the web-based Ayushman Billing application directly in your browser.
