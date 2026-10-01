@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, render_template
+from flask import Flask, Response, jsonify, render_template, request
 
 BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__)
@@ -56,7 +56,7 @@ def sitemap():
     return Response(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
-        "<url><loc>/</loc></url>"
+        f"<url><loc>{request.url_root}</loc></url>"
         "</urlset>",
         mimetype="application/xml"
     )
