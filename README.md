@@ -1,115 +1,129 @@
 # AYUSHMAN BILLING
 
-DB-free Ayushman billing web application.
+DB-free Ayushman billing web application for hospital billing and package management.
 
-## TECHNOLOGY
+## Current stack
 
-- Python
-- Flask
-- HTML
-- CSS
-- JavaScript
+- Python 3.14.8
+- Flask 3.1.3
+- Gunicorn 23.0.0
+- HTML / CSS / JavaScript
 - JSON package master
+- No database
 
-## DATABASE
+Python 3.14.8 is the current Python 3.14 maintenance release as of 30 September 2026. Flask 3.1.3 is the current stable Flask release; Flask 3.2 is still unreleased.
 
-This project does NOT use:
+## Features
 
-- MySQL
-- SQLite
-- PostgreSQL
-- MongoDB
+- Patient billing form
+- Editable billing rows
+- Ayushman package master loaded from `data/packages.json`
+- Print / Save as PDF workflow
+- Hospital letterhead print spacing
+- Responsive screen layout
+- No automatic patient-billing storage
+- Health-check endpoint at `/health`
 
-Patient billing information is not automatically stored by the Python server.
+## Installation
 
-## INSTALLATION
+Use Python 3.14.8.
 
-Install Python 3.
+```text
+python -m venv .venv
+```
 
-Open Command Prompt inside:
+### Windows
 
-AYUSHMAN BILLING
-
-Run:
-
+```text
+.venv\\Scripts\\activate
+python -m pip install --upgrade pip
 pip install -r requirements.txt
-
-Then run:
-
 python app.py
+```
 
-Open in the server PC:
+Open:
 
-http://127.0.0.1:5000
+`http://127.0.0.1:5000`
 
-## SAME NETWORK
+## Same-network use
 
-Find the server PC IP address:
+Start the application on the hospital/server PC.
 
+Find the server PC IPv4 address:
+
+```text
 ipconfig
+```
 
-Look for:
+For example:
 
-IPv4 Address
+`192.168.1.50`
 
-Example:
+Then another PC, tablet, or Android device on the same network can open:
 
-192.168.1.50
+`http://192.168.1.50:5000`
 
-Then another PC/tablet/Android device on the same network can open:
+## Production server
 
-http://192.168.1.50:5000
+For a production deployment, use Gunicorn instead of Flask's development server:
 
-## PDF
+```text
+gunicorn app:app --bind 0.0.0.0:5000
+```
 
-Click:
+On Windows, use `python app.py` for local/server-PC operation because Gunicorn is designed for Unix-like production environments.
 
-Save PDF / Print
+## Health check
 
-Then choose:
+Open:
 
-Save as PDF
+`/health`
 
-or:
+Expected response:
 
-Microsoft Print to PDF
+```json
+{"status":"ok","service":"ayushman-billing"}
+```
 
-## LETTERHEAD
+## PDF / printing
 
-The print stylesheet reserves:
+Use **Print / Save PDF** and select:
 
-Top header:
+- Save as PDF
+- Microsoft Print to PDF
+- Your installed printer
 
-38mm
+The print stylesheet reserves blank space for the hospital letterhead.
 
-Bottom footer:
+Adjust these values in:
 
-28mm
+`static/css/print.css`
 
-Change these values inside:
+- `35mm` top header space
+- `25mm` bottom footer space
 
-static/css/print.css
+## Patient data
 
-if your hospital letterhead requires different spacing.
+Patient billing information is kept in the browser while creating the bill. The current application does **not** save patient billing records on the Python server.
 
-## PATIENT DATA
-
-Patient information is held in the browser while creating the bill.
-
-The server does not save the patient bill.
-
-## PACKAGE MASTER
+## Package master
 
 Package information is stored in:
 
-data/packages.json
+`data/packages.json`
 
-This is package master information only.
+This is package-master information only; it is not a patient billing database.
 
-It does not contain patient billing records.
+## Upgrade notes
 
-## 🚀 Live Demo
+The 2026 upgrade:
 
-🌐 **[Open Ayushman Billing Online](https://ayushman-billing.onrender.com/)**
-
-> Access the web-based Ayushman Billing application directly in your browser.
+- Pins Flask to the current stable 3.1.3 release.
+- Pins Gunicorn to 23.0.0.
+- Targets Python 3.14.8.
+- Removes development-debug behavior from the default runtime.
+- Adds a lightweight `/health` endpoint.
+- Adds basic HTTP security headers.
+- Uses `pathlib` for cross-platform file handling.
+- Validates that the package master is a JSON array.
+- Keeps the existing UI, billing workflow, and print layout intact.
