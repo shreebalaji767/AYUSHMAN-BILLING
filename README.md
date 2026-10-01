@@ -127,3 +127,23 @@ The 2026 upgrade:
 - Uses `pathlib` for cross-platform file handling.
 - Validates that the package master is a JSON array.
 - Keeps the existing UI, billing workflow, and print layout intact.
+
+
+## PWA / Installable App
+
+This version includes optional Progressive Web App support:
+
+- Web App Manifest: `static/manifest.webmanifest`
+- Service Worker: `static/sw.js`
+- Install button: shown when the browser exposes the PWA install prompt
+- Offline app-shell caching for the main billing screen
+- Package master uses network-first loading and can fall back to the last cached response
+- Standalone app mode on supported browsers
+
+### Installing
+
+Open the application in a supported browser and use **Install App** when the browser offers installation.
+
+For normal PWA installation, the app must be served from **HTTPS**. Browsers also allow installation during local development from `localhost` / `127.0.0.1`. A plain HTTP address on another device over a LAN is generally not an installable secure context.
+
+PWA support is optional: the normal browser version and printing workflow continue to work without installation.
