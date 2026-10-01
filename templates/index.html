@@ -16,9 +16,13 @@
     <meta name="description" content="BLSSNVJ21 browser-based Ayushman billing application for hospital package billing, patient details, billing totals, printing and PDF generation. Data is stored locally in the browser.">
     <meta name="keywords" content="BLSSNVJ21, Ayushman billing, hospital billing, package billing, PM-JAY billing, hospital billing software, browser billing application">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="canonical" href="{{ request.url }}">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
     <meta property="og:title" content="BLSSNVJ21 | Ayushman Billing">
     <meta property="og:description" content="Browser-based hospital Ayushman billing application with local browser storage, package billing and print-ready billing documents.">
     <meta property="og:site_name" content="BLSSNVJ21">
@@ -27,6 +31,7 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="BLSSNVJ21 | Ayushman Billing">
     <meta name="twitter:description" content="Browser-based Ayushman hospital billing application with local browser storage.">
+    <meta name="twitter:url" content="{{ request.url }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -53,17 +58,19 @@
         href="{{ url_for('static', filename='icons/icon-192.svg') }}"
     >
 
-    <title>BLSSNVJ21 | Ayushman Billing</title>
+    <title>BLSSNVJ21 | Ayushman Billing Software</title>
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "BLSSNVJ21 Ayushman Billing",
+      "url": "{{ request.url }}",
+      "softwareVersion": "2026.10",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web Browser",
       "inLanguage": "en-IN",
-      "description": "Browser-based hospital billing application for Ayushman package billing and print-ready billing documents."
+      "description": "Browser-based hospital billing application for Ayushman package billing and print-ready billing documents. Patient and billing draft data is stored only in the user browser."
     }
     </script>
 
