@@ -28,7 +28,7 @@
    GLOBAL APPLICATION STATE
 ============================================================ */
 
-const APP_VERSION = "2026.10.2";
+const APP_VERSION = "2026.10.3";
 const BILL_SCHEMA_VERSION = 2;
 
 let billingRowNumber = 0;
