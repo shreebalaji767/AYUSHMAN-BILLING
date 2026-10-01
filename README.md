@@ -6,7 +6,7 @@ DB-free Ayushman billing web application for hospital billing and package manage
 
 - Python 3.14.8
 - Flask 3.1.3
-- Gunicorn 23.0.0
+- Gunicorn 26.2.0
 - HTML / CSS / JavaScript
 - JSON package master
 - No database
@@ -119,13 +119,15 @@ This is package-master information only; it is not a patient billing database.
 The 2026 upgrade:
 
 - Pins Flask to the current stable 3.1.3 release.
-- Pins Gunicorn to 23.0.0.
+- Pins Gunicorn to 26.2.0.
 - Targets Python 3.14.8.
 - Removes development-debug behavior from the default runtime.
 - Adds a lightweight `/health` endpoint.
-- Adds basic HTTP security headers.
+- Adds browser security headers including CSP and Permissions-Policy.
 - Uses `pathlib` for cross-platform file handling.
 - Validates that the package master is a JSON array.
+- Uses the Flask `/api/packages` endpoint consistently from the browser client.
+- Refreshes the PWA cache namespace so upgraded assets are picked up.
 - Keeps the existing UI, billing workflow, and print layout intact.
 
 
