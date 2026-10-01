@@ -28,6 +28,9 @@
    GLOBAL APPLICATION STATE
 ============================================================ */
 
+const APP_VERSION = "2026.10.2";
+const BILL_SCHEMA_VERSION = 2;
+
 let billingRowNumber = 0;
 let billDirty = false;
 
@@ -791,8 +794,8 @@ function saveDraft() {
         const payload = getDraftData();
         payload.meta = {
             app: "BLSSNVJ21",
-            version: APP_VERSION || "2026.10.2",
-            schemaVersion: BILL_SCHEMA_VERSION || 2,
+            version: APP_VERSION,
+            schemaVersion: BILL_SCHEMA_VERSION,
             savedAt: new Date().toISOString()
         };
 
