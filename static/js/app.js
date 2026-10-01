@@ -2184,6 +2184,7 @@ function getStorageBytes() {
     try {
         bytes += new Blob([window.localStorage.getItem(STORAGE_KEY) || ""]).size;
         bytes += new Blob([window.localStorage.getItem(PACKAGE_STORAGE_KEY) || ""]).size;
+        bytes += new Blob([window.localStorage.getItem(HISTORY_STORAGE_KEY) || ""]).size;
     } catch (error) {
         return 0;
     }
@@ -2358,6 +2359,7 @@ function bindStorageCenter() {
 
             window.localStorage.removeItem(STORAGE_KEY);
             window.localStorage.removeItem(PACKAGE_STORAGE_KEY);
+            window.localStorage.removeItem(HISTORY_STORAGE_KEY);
 
             setStorageStatus("Browser app data cleared", "ready");
             updateStorageCenter();
