@@ -1934,80 +1934,6 @@ function browserStorageAvailable() {
     }
 }
 
-function createBrowserTools() {
-    const actions = document.querySelector(".bottom-actions");
-    if (!actions || document.getElementById("browserTools")) return;
-
-    const group = document.createElement("div");
-    group.id = "browserTools";
-    group.className = "browser-tools";
-
-    const exportButton = document.createElement("button");
-    exportButton.type = "button";
-    exportButton.className = "btn btn-secondary";
-    exportButton.textContent = "Export Bill";
-    exportButton.title = "Download the current bill as JSON";
-    exportButton.addEventListener("click", exportBillData);
-
-    const importButton = document.createElement("button");
-    importButton.type = "button";
-    importButton.className = "btn btn-secondary";
-    importButton.textContent = "Import Bill";
-    importButton.title = "Load a previously exported bill";
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".json,application/json";
-    fileInput.hidden = true;
-
-    importButton.addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", async function () {
-        const file = fileInput.files && fileInput.files[0];
-        if (!file) return;
-
-        try {
-            const data = JSON.parse(await file.text());
-
-            if (!data || typeof data !== "object") {
-                throw new Error("Invalid bill file.");
-            }
-
-            if (!Array.isArray(data.billing)) {
-                throw new Error("Billing rows are missing.");
-            }
-
-            importBillData(data);
-            saveDraft();
-            setStorageStatus("Bill imported and saved locally", "ready");
-        } catch (error) {
-            console.error("Import failed:", error);
-            setStorageStatus("Import failed: invalid JSON bill", "error");
-            window.alert("Unable to import this bill. Please select a valid BLSSNVJ21 JSON export.");
-        } finally {
-            fileInput.value = "";
-        }
-    });
-
-    const copyButton = document.createElement("button");
-    copyButton.type = "button";
-    copyButton.className = "btn btn-secondary";
-    copyButton.textContent = "Copy JSON";
-    copyButton.title = "Copy the current bill JSON to the clipboard";
-    copyButton.addEventListener("click", async function () {
-        try {
-            await navigator.clipboard.writeText(
-                JSON.stringify(collectBillData(), null, 2)
-            );
-            setStorageStatus("Bill JSON copied to clipboard", "ready");
-        } catch (error) {
-            setStorageStatus("Clipboard access unavailable", "error");
-        }
-    });
-
-    group.append(exportButton, importButton, copyButton, fileInput);
-    actions.prepend(group);
-}
-
 function exportBillData() {
     const data = collectBillData();
 
@@ -2103,38 +2029,7 @@ function setupPackageAutocomplete() {
     });
 }
 
-function initializeUpgradeFeatures() {
-    createBrowserTools();
-    setupPackageAutocomplete();
-    upgradeStorageSchema();
 
-    if (browserStorageAvailable()) {
-        setStorageStatus("Browser storage ready", "ready");
-    } else {
-        setStorageStatus("Browser storage unavailable", "error");
-    }
-
-    document.addEventListener("keydown", function (event) {
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "s") {
-            event.preventDefault();
-            exportBillData();
-        }
-
-        if (event.ctrlKey && event.key === "Enter") {
-            event.preventDefault();
-            addBillingRow();
-        }
-
-        if (event.key === "Escape") {
-            const active = document.activeElement;
-            if (active && active.matches("input, textarea")) {
-                active.blur();
-            }
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);
 
 window.addEventListener("beforeunload", saveDraft);
 window.addEventListener("pagehide", saveDraft);
