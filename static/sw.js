@@ -1,11 +1,11 @@
-/* BLSSNVJ21 PWA service worker 2026.10.9 */
-const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.9";
+/* BLSSNVJ21 PWA service worker 2026.10.10 */
+const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.10";
 
 const APP_SHELL = [
   "/",
-  "/static/css/style.css?v=2026.10.9",
-  "/static/css/print.css?v=2026.10.9",
-  "/static/js/app.js?v=2026.10.9",
+  "/static/css/style.css?v=2026.10.10",
+  "/static/css/print.css?v=2026.10.10",
+  "/static/js/app.js?v=2026.10.10",
   "/static/manifest.webmanifest",
   "/static/icons/icon-192.svg",
   "/static/icons/icon-512.svg",
@@ -23,7 +23,11 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      ))
       .then(() => self.clients.claim())
   );
 });
