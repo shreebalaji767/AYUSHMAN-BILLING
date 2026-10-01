@@ -29,6 +29,7 @@
 ============================================================ */
 
 let billingRowNumber = 0;
+let billDirty = false;
 
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
 const PACKAGE_STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_PACKAGE_MASTER_V1";
@@ -53,8 +54,11 @@ function initializeApplication() {
     bindButtons();
 
     initializeExistingRows();
+    initializeManualSaveState();
 
     restoreDraft();
+
+    markBillClean();
 
     /*
        Browser storage is manual only.
@@ -561,6 +565,7 @@ function addBillingRow(data = {}) {
 
 
     updateRowNumbers();
+    markBillDirty();
 
     const packageInput = row.querySelector("input");
     if (packageInput) packageInput.setAttribute("list", "blssnvj21-package-codes");
@@ -787,14 +792,18 @@ function saveDraft() {
             savedAt: new Date().toISOString()
         };
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-        if (typeof setStorageStatus === "function") {
-            setStorageStatus("Saved locally", "ready");
+        markBillClean();
+
+        const saveButton = document.getElementById("saveBillBtn");
+        if (saveButton) {
+            saveButton.textContent = "Saved ✓";
+            saveButton.dataset.saved = "true";
         }
+
+        setStorageStatus("Saved locally", "saved");
     } catch (error) {
         console.warn("Browser storage unavailable:", error);
-        if (typeof setStorageStatus === "function") {
-            setStorageStatus("Local save unavailable", "error");
-        }
+        setStorageStatus("Local save unavailable", "error");
     }
 }
 
@@ -839,9 +848,61 @@ function restoreDraft() {
         });
 
         updateRowNumbers();
+        markBillClean();
+        setStorageStatus("Saved bill restored", "saved");
     } catch (error) {
         console.warn("Unable to restore browser draft:", error);
     }
+}
+
+/* ============================================================
+   MANUAL SAVE STATE
+============================================================ */
+
+function initializeManualSaveState() {
+    const fields = document.querySelectorAll("input, textarea, select");
+
+    fields.forEach(function (field) {
+        field.addEventListener("input", function () {
+            markBillDirty();
+        });
+
+        field.addEventListener("change", function () {
+            markBillDirty();
+        });
+    });
+
+    window.addEventListener("beforeunload", function (event) {
+        if (!billDirty) return;
+
+        event.preventDefault();
+        event.returnValue = "";
+    });
+
+    setStorageStatus("Ready — not saved", "ready");
+}
+
+function markBillDirty() {
+    billDirty = true;
+    setStorageStatus("Unsaved changes", "dirty");
+
+    const saveButton = document.getElementById("saveBillBtn");
+    if (saveButton) {
+        saveButton.textContent = "Save";
+        saveButton.removeAttribute("data-saved");
+    }
+}
+
+function markBillClean() {
+    billDirty = false;
+}
+
+function setStorageStatus(message, state = "ready") {
+    const status = document.getElementById("storageStatus");
+    if (!status) return;
+
+    status.textContent = message;
+    status.dataset.state = state;
 }
 
 /* ============================================================
@@ -989,7 +1050,8 @@ function clearBill() {
     addBillingRow();
 
     removeSavedDraft();
-    setStorageStatus("New unsaved bill", "ready");
+    markBillClean();
+    setStorageStatus("New bill — not saved", "ready");
 
 }
 
@@ -1094,6 +1156,15 @@ document.addEventListener(
         /*
            Ctrl + P
         */
+
+        if (
+            (event.ctrlKey || event.metaKey) &&
+            event.key.toLowerCase() === "s"
+        ) {
+            event.preventDefault();
+            saveDraft();
+            return;
+        }
 
         if (
             event.ctrlKey &&
