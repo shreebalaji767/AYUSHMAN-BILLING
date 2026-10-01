@@ -1,766 +1,221 @@
-/* ============================================================
-   AYUSHMAN BILLING
-   COMPLETE APPLICATION JAVASCRIPT
+/* BLSSNVJ21 Ayushman Billing — stable client runtime */
+"use strict";
 
-   File:
-   D:\AYUSHMAN BILLING\static\js\app.js
-
-   FEATURES
-   ------------------------------------------------------------
-   • Patient information
-   • Two-column patient layout
-   • Editable billing table
-   • Text / numbers / symbols in every billing field
-   • Add billing rows
-   • Delete billing rows
-   • Editable billing totals
-   • Manual totals are NOT overwritten automatically
-   • Clear button
-   • New Bill button
-   • Print / Save PDF
-   • Bottom action buttons
-   • Browser-only package master storage
-   • Keyboard-friendly operation
-============================================================ */
-
-
-/* ============================================================
-   GLOBAL APPLICATION STATE
-============================================================ */
-
-const APP_VERSION = "2026.10.5";
-const BILL_SCHEMA_VERSION = 3;
-let deferredInstallPrompt = null;
-
-let billingRowNumber = 0;
-let billDirty = false;
-
+const APP_VERSION = "2026.10.6";
+const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
-const PACKAGE_STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_PACKAGE_MASTER_V1";
 
-/* ============================================================
-   DOM READY
-============================================================ */
+let rowSequence = 0;
+let billDirty = false;
+let installPrompt = null;
 
-document.addEventListener("DOMContentLoaded", function () {
+const $ = (id) => document.getElementById(id);
 
-    initializeApplication();
-
-});
-
-
-/* ============================================================
-   INITIALIZE APPLICATION
-============================================================ */
-
-function initializeApplication() {
-
-    bindButtons();
-
-    initializeExistingRows();
-    initializeManualSaveState();
-
-    restoreDraft();
-
-    /*
-       Browser storage is manual only.
-       Nothing is saved until the user presses Save.
-    */
-
-    /*
-       If there are no rows, create one empty row.
-    */
-
-    const billingBody =
-        document.getElementById("billingBody");
-
-    if (
-        billingBody &&
-        billingBody.children.length === 0
-    ) {
-
-        addBillingRow();
-
+function storageAvailable() {
+    try {
+        const key = "__blssnvj21_test__";
+        localStorage.setItem(key, "1");
+        localStorage.removeItem(key);
+        return true;
+    } catch (_) {
+        return false;
     }
-
 }
 
+function setStatus(message, state = "ready") {
+    const el = $("storageStatus");
+    if (!el) return;
+    el.textContent = message;
+    el.dataset.state = state;
+}
 
-/* ============================================================
-   BUTTON BINDINGS
-============================================================ */
+function markDirty() {
+    billDirty = true;
+    setStatus("Unsaved changes", "dirty");
+    const save = $("saveBillBtn");
+    if (save) save.textContent = "Save";
+}
 
-function bindButtons() {
+function markClean(message = "Saved to browser storage") {
+    billDirty = false;
+    setStatus(message, "saved");
+}
 
-    const installPwaBtn = document.getElementById("installPwaBtn");
-    if (installPwaBtn) installPwaBtn.addEventListener("click", async function () {
-        if (!deferredInstallPrompt) return;
-        deferredInstallPrompt.prompt();
-        try { await deferredInstallPrompt.userChoice; } catch (error) { console.warn("PWA install prompt failed:", error); }
-        deferredInstallPrompt = null;
-        installPwaBtn.hidden = true;
+function value(id) {
+    const el = $(id);
+    return el ? el.value : "";
+}
+
+function setValue(id, valueToSet) {
+    const el = $(id);
+    if (el) el.value = valueToSet ?? "";
+}
+
+function rowData(row) {
+    const inputs = [...row.querySelectorAll("input")];
+    return {
+        packageCode: inputs[0]?.value || "",
+        packageType: inputs[1]?.value || "",
+        procedureCost: inputs[2]?.value || "",
+        stratificationCost: inputs[3]?.value || "",
+        qty: inputs[4]?.value || "",
+        packageCost: inputs[5]?.value || "",
+        adjustmentFactor: inputs[6]?.value || "",
+        incentives: inputs[7]?.value || "",
+        totalAmount: inputs[8]?.value || "",
+        remarks: inputs[9]?.value || ""
+    };
+}
+
+function getDraft() {
+    const patientIds = [
+        "ipdNo","uhid","patientName","age","sdwo",
+        "gender","maritalStatus","admissionDate","diagnosis","address"
+    ];
+    const totalIds = [
+        "totalPackageWithoutIncentives",
+        "totalAdjustedPackageAmount",
+        "totalPayableAmount",
+        "eRupiAmount",
+        "miscellaneousAmount"
+    ];
+
+    const draft = { patient: {}, totals: {}, remarks: value("billRemarks"), rows: [] };
+
+    patientIds.forEach((id) => { draft.patient[id] = value(id); });
+    totalIds.forEach((id) => { draft.totals[id] = value(id); });
+
+    document.querySelectorAll("#billingBody .billing-row").forEach((row) => {
+        draft.rows.push(rowData(row));
     });
 
-    /* --------------------------------------------------------
-       TOP ADD ROW
-    -------------------------------------------------------- */
-
-    const addRowBtn =
-        document.getElementById("addRowBtn");
-
-    if (addRowBtn) {
-
-        addRowBtn.addEventListener(
-            "click",
-            function () {
-
-                addBillingRow();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       BILLING SECTION ADD ROW
-    -------------------------------------------------------- */
-
-    const addBillingRowBtn =
-        document.getElementById(
-            "addBillingRowBtn"
-        );
-
-    if (addBillingRowBtn) {
-
-        addBillingRowBtn.addEventListener(
-            "click",
-            function () {
-
-                addBillingRow();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       BOTTOM ADD ROW
-    -------------------------------------------------------- */
-
-    const addBottomRowBtn =
-        document.getElementById(
-            "addBottomRowBtn"
-        );
-
-    if (addBottomRowBtn) {
-
-        addBottomRowBtn.addEventListener(
-            "click",
-            function () {
-
-                addBillingRow();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       TOP PRINT
-    -------------------------------------------------------- */
-
-    const saveBtn =
-        document.getElementById("saveBillBtn");
-
-    if (saveBtn) {
-        saveBtn.addEventListener("click", function () {
-            saveDraft();
-        });
-    }
-
-    const printBtn =
-        document.getElementById("printBtn");
-
-    if (printBtn) {
-
-        printBtn.addEventListener(
-            "click",
-            function () {
-
-                printBill();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       BOTTOM PRINT
-    -------------------------------------------------------- */
-
-    const bottomPrintBtn =
-        document.getElementById(
-            "bottomPrintBtn"
-        );
-
-    if (bottomPrintBtn) {
-
-        bottomPrintBtn.addEventListener(
-            "click",
-            function () {
-
-                printBill();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       CLEAR
-    -------------------------------------------------------- */
-
-    const clearBtn =
-        document.getElementById("clearBtn");
-
-    if (clearBtn) {
-
-        clearBtn.addEventListener(
-            "click",
-            function () {
-
-                clearBill();
-
-            }
-        );
-
-    }
-
-
-    /* --------------------------------------------------------
-       NEW BILL
-    -------------------------------------------------------- */
-
-    const newBillBtn =
-        document.getElementById("newBillBtn");
-
-    if (newBillBtn) {
-
-        newBillBtn.addEventListener(
-            "click",
-            function () {
-
-                newBill();
-
-            }
-        );
-
-    }
-
-}
-
-
-/* ============================================================
-   ADD BILLING ROW
-============================================================ */
-
-function addBillingRow(data = {}) {
-
-    const billingBody =
-        document.getElementById("billingBody");
-
-    if (!billingBody) {
-        return;
-    }
-
-
-    billingRowNumber++;
-
-
-    const row =
-        document.createElement("tr");
-
-    row.className =
-        "billing-row";
-
-
-    row.dataset.row =
-        billingRowNumber;
-
-
-    /* ========================================================
-       CELL CREATOR
-    ======================================================== */
-
-    function createInputCell(
-        value = "",
-        placeholder = ""
-    ) {
-
-        const td =
-            document.createElement("td");
-
-
-        const input =
-            document.createElement("input");
-
-
-        /*
-           TEXT is intentionally used.
-
-           This allows:
-
-           10000
-           ₹10,000
-           ₹10,000/-
-           N/A
-           APPROVED
-           ABC-123
-           10%
-           SPECIAL
-           Any text
-           Any symbols
-        */
-
-        input.type =
-            "text";
-
-
-        input.value =
-            value ?? "";
-
-
-        input.placeholder =
-            placeholder;
-
-
-        input.autocomplete =
-            "off";
-
-
-        input.spellcheck =
-            false;
-
-
-        td.appendChild(input);
-
-
-        return td;
-
-    }
-
-
-    /* ========================================================
-       # COLUMN
-    ======================================================== */
-
-    const numberCell =
-        document.createElement("td");
-
-
-    numberCell.className =
-        "row-number";
-
-
-    numberCell.textContent =
-        billingRowNumber;
-
-
-    row.appendChild(numberCell);
-
-
-    /* ========================================================
-       PACKAGE CODE
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.packageCode || "",
-            "Package Code"
-        )
-    );
-
-
-    /* ========================================================
-       PACKAGE TYPE
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.packageType || "",
-            "Package Type"
-        )
-    );
-
-
-    /* ========================================================
-       PROCEDURE COST
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.procedureCost || "",
-            "Procedure Cost"
-        )
-    );
-
-
-    /* ========================================================
-       STRATIFICATION COST
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.stratificationCost || "",
-            "Stratification Cost"
-        )
-    );
-
-
-    /* ========================================================
-       QTY
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.qty || "",
-            "Qty"
-        )
-    );
-
-
-    /* ========================================================
-       PACKAGE COST
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.packageCost || "",
-            "Package Cost"
-        )
-    );
-
-
-    /* ========================================================
-       ADJUSTMENT FACTOR
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.adjustmentFactor || "",
-            "Adj. Factor"
-        )
-    );
-
-
-    /* ========================================================
-       INCENTIVES
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.incentives || "",
-            "Incentives"
-        )
-    );
-
-
-    /* ========================================================
-       TOTAL AMOUNT
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.totalAmount || "",
-            "Total Amount"
-        )
-    );
-
-
-    /* ========================================================
-       REMARKS
-    ======================================================== */
-
-    row.appendChild(
-        createInputCell(
-            data.remarks || "",
-            "Remarks"
-        )
-    );
-
-
-    /* ========================================================
-       ACTION
-    ======================================================== */
-
-    const actionCell =
-        document.createElement("td");
-
-
-    actionCell.className =
-        "action-column";
-
-
-    const deleteButton =
-        document.createElement("button");
-
-
-    deleteButton.type =
-        "button";
-
-
-    deleteButton.className =
-        "delete-row";
-
-
-    deleteButton.textContent =
-        "Delete";
-
-
-    deleteButton.addEventListener(
-        "click",
-        function () {
-
-            deleteBillingRow(row);
-
-        }
-    );
-
-
-    actionCell.appendChild(
-        deleteButton
-    );
-
-
-    row.appendChild(
-        actionCell
-    );
-
-
-    /* ========================================================
-       ADD ROW TO TABLE
-    ======================================================== */
-
-    billingBody.appendChild(
-        row
-    );
-
-
-    /*
-       Put cursor into the first editable field.
-    */
-
-    const firstInput =
-        row.querySelector(
-            "input"
-        );
-
-
-    if (firstInput) {
-
-        setTimeout(
-            function () {
-
-                firstInput.focus();
-
-            },
-            20
-        );
-
-    }
-
-
-    updateRowNumbers();
-    markBillDirty();
-
-    const packageInput = row.querySelector("input");
-    if (packageInput) packageInput.setAttribute("list", "blssnvj21-package-codes");
-
-}
-
-
-/* ============================================================
-   DELETE BILLING ROW
-============================================================ */
-
-function deleteBillingRow(row) {
-
-    if (!row) {
-        return;
-    }
-
-
-    const billingBody =
-        document.getElementById(
-            "billingBody"
-        );
-
-
-    if (!billingBody) {
-        return;
-    }
-
-
-    /*
-       If only one row exists,
-       don't leave the table completely empty.
-    */
-
-    if (
-        billingBody.children.length <= 1
-    ) {
-
-        const inputs =
-            row.querySelectorAll(
-                "input"
-            );
-
-
-        inputs.forEach(
-            function (input) {
-
-                input.value = "";
-
-            }
-        );
-
-        markBillDirty();
-        return;
-
-    }
-
-
-    row.remove();
-
-    updateRowNumbers();
-    markBillDirty();
-
-}
-
-
-/* ============================================================
-   UPDATE ROW NUMBERS
-============================================================ */
-
-function updateRowNumbers() {
-
-    const rows =
-        document.querySelectorAll(
-            "#billingBody .billing-row"
-        );
-
-
-    rows.forEach(
-        function (row, index) {
-
-            const numberCell =
-                row.querySelector(
-                    ".row-number"
-                );
-
-
-            if (numberCell) {
-
-                numberCell.textContent =
-                    index + 1;
-
-            }
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   INITIALIZE EXISTING ROWS
-============================================================ */
-
-function initializeExistingRows() {
-
-    const rows =
-        document.querySelectorAll(
-            "#billingBody tr"
-        );
-
-
-    rows.forEach(
-        function (row) {
-
-            attachDeleteButton(
-                row
-            );
-
-        }
-    );
-
-
-    updateRowNumbers();
-
-}
-
-
-/* ============================================================
-   ATTACH DELETE BUTTON TO EXISTING ROW
-============================================================ */
-
-function attachDeleteButton(row) {
-
-    if (!row) {
-        return;
-    }
-
-
-    const deleteButton =
-        row.querySelector(
-            ".delete-row"
-        );
-
-
-    if (!deleteButton) {
-        return;
-    }
-
-
-    deleteButton.addEventListener(
-        "click",
-        function () {
-
-            deleteBillingRow(row);
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   BROWSER-ONLY STORAGE
-   ------------------------------------------------------------
-   Patient/billing data is stored only in the user's browser
-   using localStorage. Nothing is posted to the Flask server.
-============================================================ */
-
-function getDraftData() {
-    const data = {
-        patient: {},
-        totals: {},
-        remarks: "",
-        rows: []
+    draft.meta = {
+        app: "BLSSNVJ21",
+        version: APP_VERSION,
+        schemaVersion: BILL_SCHEMA_VERSION,
+        savedAt: new Date().toISOString()
     };
+    return draft;
+}
+
+function saveDraft() {
+    try {
+        if (!storageAvailable()) throw new Error("localStorage unavailable");
+        const serialized = JSON.stringify(getDraft());
+        localStorage.setItem(STORAGE_KEY, serialized);
+
+        if (localStorage.getItem(STORAGE_KEY) !== serialized) {
+            throw new Error("storage verification failed");
+        }
+
+        const button = $("saveBillBtn");
+        if (button) {
+            button.textContent = "Saved ✓";
+            button.dataset.saved = "true";
+        }
+        markClean();
+    } catch (error) {
+        console.error("BLSSNVJ21 save error:", error);
+        setStatus("Save failed — browser storage unavailable", "error");
+    }
+}
+
+function createInput(valueToSet, placeholder) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = valueToSet ?? "";
+    input.placeholder = placeholder;
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    return input;
+}
+
+function addRow(data = {}, focus = true) {
+    const body = $("billingBody");
+    if (!body) return null;
+
+    rowSequence += 1;
+    const row = document.createElement("tr");
+    row.className = "billing-row";
+    row.dataset.row = String(rowSequence);
+
+    const number = document.createElement("td");
+    number.className = "row-number";
+    row.appendChild(number);
+
+    const fields = [
+        ["packageCode", "Package Code"],
+        ["packageType", "Package Type"],
+        ["procedureCost", "Procedure Cost"],
+        ["stratificationCost", "Stratification Cost"],
+        ["qty", "Qty"],
+        ["packageCost", "Package Cost"],
+        ["adjustmentFactor", "Adj. Factor"],
+        ["incentives", "Incentives"],
+        ["totalAmount", "Total Amount"],
+        ["remarks", "Remarks"]
+    ];
+
+    fields.forEach(([key, placeholder]) => {
+        const td = document.createElement("td");
+        td.appendChild(createInput(data[key], placeholder));
+        row.appendChild(td);
+    });
+
+    const action = document.createElement("td");
+    action.className = "action-column";
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete-row";
+    del.textContent = "Delete";
+    del.addEventListener("click", () => deleteRow(row));
+
+    action.appendChild(del);
+    row.appendChild(action);
+    body.appendChild(row);
+
+    renumberRows();
+    markDirty();
+
+    if (focus) {
+        const first = row.querySelector("input");
+        if (first) setTimeout(() => first.focus(), 0);
+    }
+
+    return row;
+}
+
+function deleteRow(row) {
+    const body = $("billingBody");
+    if (!body || !row) return;
+
+    if (body.querySelectorAll(".billing-row").length <= 1) {
+        row.querySelectorAll("input").forEach((input) => { input.value = ""; });
+    } else {
+        row.remove();
+    }
+
+    renumberRows();
+    markDirty();
+}
+
+function renumberRows() {
+    document.querySelectorAll("#billingBody .billing-row").forEach((row, index) => {
+        const number = row.querySelector(".row-number");
+        if (number) number.textContent = String(index + 1);
+    });
+}
+
+function clearBill(confirmFirst = true) {
+    if (confirmFirst && !window.confirm("Clear all patient information, billing rows and totals?")) {
+        return;
+    }
 
     [
-        "ipdNo", "uhid", "patientName", "age", "sdwo",
-        "gender", "maritalStatus", "admissionDate",
-        "diagnosis", "address"
-    ].forEach(function (id) {
-        data.patient[id] = getFieldValue(id);
-    });
+        "ipdNo","uhid","patientName","age","sdwo","gender",
+        "maritalStatus","admissionDate","diagnosis","address","billRemarks"
+    ].forEach((id) => setValue(id, ""));
 
     [
         "totalPackageWithoutIncentives",
@@ -768,481 +223,167 @@ function getDraftData() {
         "totalPayableAmount",
         "eRupiAmount",
         "miscellaneousAmount"
-    ].forEach(function (id) {
-        data.totals[id] = getFieldValue(id);
-    });
+    ].forEach((id) => setValue(id, "₹0.00"));
 
-    data.remarks = getFieldValue("billRemarks");
+    const body = $("billingBody");
+    if (body) body.innerHTML = "";
+    rowSequence = 0;
+    addRow({}, false);
 
-    document.querySelectorAll("#billingBody .billing-row").forEach(function (row) {
-        const inputs = row.querySelectorAll("input");
-        data.rows.push({
-            packageCode: inputs[0]?.value || "",
-            packageType: inputs[1]?.value || "",
-            procedureCost: inputs[2]?.value || "",
-            stratificationCost: inputs[3]?.value || "",
-            qty: inputs[4]?.value || "",
-            packageCost: inputs[5]?.value || "",
-            adjustmentFactor: inputs[6]?.value || "",
-            incentives: inputs[7]?.value || "",
-            totalAmount: inputs[8]?.value || "",
-            remarks: inputs[9]?.value || ""
-        });
-    });
-
-    return data;
-}
-
-function saveDraft() {
-    try {
-        if (!window.localStorage) {
-            throw new Error("Browser localStorage is unavailable.");
-        }
-
-        const payload = getDraftData();
-        payload.meta = {
-            app: "BLSSNVJ21",
-            version: APP_VERSION,
-            schemaVersion: BILL_SCHEMA_VERSION,
-            savedAt: new Date().toISOString()
-        };
-
-        const serialized = JSON.stringify(payload);
-
-        // SAVE BUTTON = explicit browser-storage save.
-        window.localStorage.setItem(STORAGE_KEY, serialized);
-
-        // Verify that the browser actually stored the bill.
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (stored !== serialized) {
-            throw new Error("Browser storage verification failed.");
-        }
-
-        markBillClean();
-
-        const saveButton = document.getElementById("saveBillBtn");
-        if (saveButton) {
-            saveButton.textContent = "Saved ✓";
-            saveButton.dataset.saved = "true";
-        }
-
-        setStorageStatus("Saved to browser storage", "saved");
-    } catch (error) {
-        console.warn("Unable to save bill to browser storage:", error);
-        setStorageStatus("Save failed — browser storage unavailable", "error");
-    }
-}
-
-function removeSavedDraft() {
-    try {
-        window.localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-        console.warn("Unable to clear browser storage:", error);
-    }
+    try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    billDirty = false;
+    setStatus("New bill — not saved", "ready");
+    const save = $("saveBillBtn");
+    if (save) save.textContent = "Save";
 }
 
 function restoreDraft() {
+    if (!storageAvailable()) {
+        setStatus("Browser storage unavailable", "error");
+        return false;
+    }
+
     try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
 
-        const data = JSON.parse(raw);
-        if (!data || typeof data !== "object") return;
+        const draft = JSON.parse(raw);
+        if (!draft || typeof draft !== "object") return false;
 
-        Object.entries(data.patient || {}).forEach(function ([id, value]) {
-            setFieldValue(id, value);
-        });
+        Object.entries(draft.patient || {}).forEach(([id, v]) => setValue(id, v));
+        Object.entries(draft.totals || {}).forEach(([id, v]) => setValue(id, v));
+        setValue("billRemarks", draft.remarks || "");
 
-        Object.entries(data.totals || {}).forEach(function ([id, value]) {
-            setFieldValue(id, value);
-        });
+        const body = $("billingBody");
+        if (!body) return false;
 
-        setFieldValue("billRemarks", data.remarks || "");
+        body.innerHTML = "";
+        rowSequence = 0;
 
-        const billingBody = document.getElementById("billingBody");
-        if (!billingBody) return;
+        const rows = Array.isArray(draft.rows) && draft.rows.length ? draft.rows : [{}];
+        rows.forEach((row) => addRow(row, false));
 
-        billingBody.innerHTML = "";
-        billingRowNumber = 0;
-
-        const rows = Array.isArray(data.rows) && data.rows.length
-            ? data.rows
-            : [{}];
-
-        rows.forEach(function (row) {
-            addBillingRow(row);
-        });
-
-        updateRowNumbers();
-        markBillClean();
-        setStorageStatus("Saved bill restored", "saved");
+        renumberRows();
+        markClean("Saved bill restored");
+        return true;
     } catch (error) {
-        console.warn("Unable to restore browser draft:", error);
+        console.error("BLSSNVJ21 restore error:", error);
+        setStatus("Saved bill could not be restored", "error");
+        return false;
     }
 }
-
-/* ============================================================
-   MANUAL SAVE STATE
-============================================================ */
-
-function initializeManualSaveState() {
-    // Delegated listeners also cover billing rows added after page load.
-    document.addEventListener("input", function (event) {
-        if (event.target.matches("input, textarea, select")) {
-            markBillDirty();
-        }
-    });
-
-    document.addEventListener("change", function (event) {
-        if (event.target.matches("input, textarea, select")) {
-            markBillDirty();
-        }
-    });
-
-    window.addEventListener("beforeunload", function (event) {
-        if (!billDirty) return;
-
-        event.preventDefault();
-        event.returnValue = "";
-    });
-
-    setStorageStatus("Ready — not saved", "ready");
-}
-
-function markBillDirty() {
-    billDirty = true;
-    setStorageStatus("Unsaved changes", "dirty");
-
-    const saveButton = document.getElementById("saveBillBtn");
-    if (saveButton) {
-        saveButton.textContent = "Save";
-        saveButton.removeAttribute("data-saved");
-    }
-}
-
-function markBillClean() {
-    billDirty = false;
-}
-
-function setStorageStatus(message, state = "ready") {
-    const status = document.getElementById("storageStatus");
-    if (!status) return;
-
-    status.textContent = message;
-    status.dataset.state = state;
-}
-
-/* ============================================================
-   CLEAR BILL
-============================================================ */
-
-function clearBill() {
-
-    const confirmed =
-        window.confirm(
-            "Clear all patient information, billing rows and totals?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    /* ========================================================
-       PATIENT INFORMATION
-    ======================================================== */
-
-    const patientFields = [
-
-        "ipdNo",
-
-        "uhid",
-
-        "patientName",
-
-        "age",
-
-        "sdwo",
-
-        "gender",
-
-        "maritalStatus",
-
-        "admissionDate",
-
-        "diagnosis",
-
-        "address"
-
-    ];
-
-
-    patientFields.forEach(
-        function (id) {
-
-            const field =
-                document.getElementById(id);
-
-
-            if (field) {
-
-                field.value =
-                    "";
-
-            }
-
-        }
-    );
-
-
-    /* ========================================================
-       REMARKS
-    ======================================================== */
-
-    const remarks =
-        document.getElementById(
-            "billRemarks"
-        );
-
-
-    if (remarks) {
-
-        remarks.value =
-            "";
-
-    }
-
-
-    /* ========================================================
-       BILLING TOTALS
-    ======================================================== */
-
-    setFieldValue(
-        "totalPackageWithoutIncentives",
-        "₹0.00"
-    );
-
-
-    setFieldValue(
-        "totalAdjustedPackageAmount",
-        "₹0.00"
-    );
-
-
-    setFieldValue(
-        "totalPayableAmount",
-        "₹0.00"
-    );
-
-
-    setFieldValue(
-        "eRupiAmount",
-        "₹0.00"
-    );
-
-
-    setFieldValue(
-        "miscellaneousAmount",
-        "₹0.00"
-    );
-
-
-    /* ========================================================
-       BILLING TABLE
-    ======================================================== */
-
-    const billingBody =
-        document.getElementById(
-            "billingBody"
-        );
-
-
-    if (billingBody) {
-
-        billingBody.innerHTML =
-            "";
-
-    }
-
-
-    billingRowNumber =
-        0;
-
-
-    /*
-       Add a new empty row.
-    */
-
-    addBillingRow();
-
-    removeSavedDraft();
-    markBillClean();
-    setStorageStatus("New bill — not saved", "ready");
-
-}
-
-
-/* ============================================================
-   NEW BILL
-============================================================ */
-
-function newBill() {
-    clearBill();
-}
-
-
-/* ============================================================
-   SET FIELD VALUE
-============================================================ */
-
-function setFieldValue(
-    id,
-    value
-) {
-
-    const field =
-        document.getElementById(id);
-
-
-    if (field) {
-
-        field.value =
-            value;
-
-    }
-
-}
-
-
-/* ============================================================
-   GET FIELD VALUE
-============================================================ */
-
-function getFieldValue(id) {
-
-    const field =
-        document.getElementById(id);
-
-
-    if (!field) {
-        return "";
-    }
-
-
-    return field.value;
-
-}
-
-
-/* ============================================================
-   PRINT BILL
-============================================================ */
 
 function printBill() {
-
-    /*
-       Browser print dialog.
-
-       print.css controls:
-       • page size
-       • header space
-       • footer space
-       • hidden buttons
-       • hidden remarks
-       • hidden action column
-       • print layout
-    */
-
     window.print();
-
 }
 
+function bindUI() {
+    $("addRowBtn")?.addEventListener("click", () => addRow());
+    $("addBillingRowBtn")?.addEventListener("click", () => addRow());
+    $("saveBillBtn")?.addEventListener("click", saveDraft);
+    $("printBtn")?.addEventListener("click", printBill);
 
-/* ============================================================
-   KEYBOARD SHORTCUT
-============================================================ */
+    $("newBillBtn")?.addEventListener("click", () => clearBill(true));
 
-document.addEventListener(
-    "keydown",
-    function (event) {
+    $("installPwaBtn")?.addEventListener("click", async () => {
+        if (!installPrompt) return;
+        try {
+            installPrompt.prompt();
+            await installPrompt.userChoice;
+        } catch (error) {
+            console.warn("PWA install prompt failed:", error);
+        }
+        installPrompt = null;
+        const button = $("installPwaBtn");
+        if (button) button.hidden = true;
+    });
 
-        /*
-           Ctrl + P
-        */
+    document.addEventListener("input", (event) => {
+        if (event.target.matches("input, textarea, select")) markDirty();
+    });
 
-        if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key.toLowerCase() === "s"
-        ) {
+    document.addEventListener("change", (event) => {
+        if (event.target.matches("input, textarea, select")) markDirty();
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
             event.preventDefault();
             saveDraft();
             return;
         }
 
-        if (
-            event.ctrlKey &&
-            event.key.toLowerCase() === "p"
-        ) {
-
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "p") {
             event.preventDefault();
-
             printBill();
-
-        }
-
-    }
-);
-
-
-window.addEventListener("beforeinstallprompt", function (event) {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    const button = document.getElementById("installPwaBtn");
-    if (button) button.hidden = false;
-});
-window.addEventListener("appinstalled", function () {
-    deferredInstallPrompt = null;
-    const button = document.getElementById("installPwaBtn");
-    if (button) button.hidden = true;
-});
-
-/* ============================================================
-   ENTER KEY SUPPORT
-============================================================ */
-
-document.addEventListener("keydown", function (event) {
-    if (event.target && event.target.tagName === "TEXTAREA") return;
-
-    if (event.key === "Enter" && event.target && event.target.closest("#billingTable")) {
-        const row = event.target.closest("tr");
-        if (!row) return;
-
-        const inputs = Array.from(row.querySelectorAll("input"));
-        const currentIndex = inputs.indexOf(event.target);
-
-        if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
-            event.preventDefault();
-            inputs[currentIndex + 1].focus();
             return;
         }
 
-        if (currentIndex === inputs.length - 1) {
+        if (event.key !== "Enter" || !event.target.closest("#billingTable")) return;
+        if (event.target.tagName === "TEXTAREA") return;
+
+        const row = event.target.closest(".billing-row");
+        if (!row) return;
+
+        const inputs = [...row.querySelectorAll("input")];
+        const index = inputs.indexOf(event.target);
+
+        if (index >= 0 && index < inputs.length - 1) {
             event.preventDefault();
-            addBillingRow();
+            inputs[index + 1].focus();
+        } else if (index === inputs.length - 1) {
+            event.preventDefault();
+            addRow();
         }
-    }
-});
+    });
 
-/* ============================================================
-   PWA INSTALL + SERVICE WORKER
-============================================================ */
+    window.addEventListener("beforeunload", (event) => {
+        if (!billDirty) return;
+        event.preventDefault();
+        event.returnValue = "";
+    });
 
-window.addEventListener("load", function () {
+    window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        installPrompt = event;
+        const button = $("installPwaBtn");
+        if (button) button.hidden = false;
+    });
+
+    window.addEventListener("appinstalled", () => {
+        installPrompt = null;
+        const button = $("installPwaBtn");
+        if (button) button.hidden = true;
+    });
+}
+
+function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch((error) => {
+        console.warn("BLSSNVJ21 service worker registration failed:", error);
+    });
+}
 
-    navigator.serviceWorker.register("/sw.js", { scope: "/" })
-        .catch(function (error) {
-            console.warn("PWA service worker registration failed:", error);
-        });
-});
+function startApp() {
+    try {
+        bindUI();
+        const restored = restoreDraft();
+
+        if (!restored && !$("billingBody")?.querySelector(".billing-row")) {
+            addRow({}, false);
+            billDirty = false;
+            setStatus("Ready — not saved", "ready");
+        }
+
+        registerServiceWorker();
+    } catch (error) {
+        console.error("BLSSNVJ21 startup error:", error);
+        setStatus("Application startup error — check browser console", "error");
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startApp, { once: true });
+} else {
+    startApp();
+}
