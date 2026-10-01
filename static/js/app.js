@@ -29,7 +29,7 @@ function storageAvailable() {
 function setStatus(message, state = "ready") {
     const el = $("storageStatus");
     if (!el) return;
-    el.textContent = String(message).replace(/\\n/g, " ").replace(/\\r/g, " ");
+    el.textContent = String(message).replace(/\\n|\\N|\\r|\\R/g, " ");
     el.dataset.state = state;
 }
 
