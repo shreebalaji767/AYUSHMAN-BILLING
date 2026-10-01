@@ -1877,12 +1877,6 @@ window.collectBillData =
     collectBillData;
 
 
-window.exportBillData =
-    exportBillData;
-
-
-window.importBillData =
-    importBillData;
 
 
 window.loadPackages =
@@ -1902,8 +1896,8 @@ window.applyPackageToRow =
    Browser-only tools: export, import, storage status, shortcuts
 ============================================================ */
 
-const APP_VERSION = "2026.10.1";
-const BILL_SCHEMA_VERSION = 3;
+const APP_VERSION = "2026.10.2";
+const BILL_SCHEMA_VERSION = 4;
 const HISTORY_STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILL_HISTORY_V1";
 const HISTORY_LIMIT = 20;
 
@@ -2071,34 +2065,6 @@ function browserStorageAvailable() {
     }
 }
 
-function exportBillData() {
-    const data = collectBillData();
-
-    data.meta = {
-        app: "BLSSNVJ21",
-        version: APP_VERSION,
-        schemaVersion: BILL_SCHEMA_VERSION,
-        exportedAt: new Date().toISOString()
-    };
-
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
-        { type: "application/json;charset=utf-8" }
-    );
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "BLSSNVJ21-ayushman-bill.json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-
-    setStorageStatus("Bill exported", "ready");
-}
-
 function upgradeStorageSchema() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -2170,212 +2136,24 @@ function setupPackageAutocomplete() {
 
 window.addEventListener("beforeunload", saveDraft);
 window.addEventListener("pagehide", saveDraft);
+document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") saveDraft();
+});
 
+document.addEventListener("keydown", function (event) {
+    const key = event.key.toLowerCase();
+    const modifier = event.ctrlKey || event.metaKey;
+    if (!modifier) return;
 
-/* ============================================================
-   BROWSER STORAGE CENTER
-   ------------------------------------------------------------
-   The application data layer is browser-only. These tools never
-   send patient, billing, or package-master data to Flask.
-============================================================ */
-
-function getStorageBytes() {
-    let bytes = 0;
-    try {
-        bytes += new Blob([window.localStorage.getItem(STORAGE_KEY) || ""]).size;
-        bytes += new Blob([window.localStorage.getItem(PACKAGE_STORAGE_KEY) || ""]).size;
-        bytes += new Blob([window.localStorage.getItem(HISTORY_STORAGE_KEY) || ""]).size;
-    } catch (error) {
-        return 0;
-    }
-    return bytes;
-}
-
-function formatStorageSize(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-}
-
-function updateStorageCenter() {
-    const status = document.getElementById("storageCenterStatus");
-    const summary = document.getElementById("storageSummary");
-
-    const available = browserStorageAvailable();
-    const packageCount = loadPackages().length;
-    const size = getStorageBytes();
-
-    if (status) {
-        status.textContent = available ? "Local Only" : "Storage Unavailable";
-        status.dataset.state = available ? "ready" : "error";
-    }
-
-    if (summary) {
-        summary.textContent = available
-            ? "Draft: " + (window.localStorage.getItem(STORAGE_KEY) ? "saved" : "empty") +
-              " · Package master: " + packageCount + " package(s)" +
-              " · App storage used: " + formatStorageSize(size)
-            : "This browser has blocked local storage. Data cannot be saved locally.";
-    }
-}
-
-function exportPackageMaster() {
-    const packages = loadPackages();
-
-    const payload = {
-        meta: {
-            app: "BLSSNVJ21",
-            type: "package-master",
-            version: APP_VERSION,
-            exportedAt: new Date().toISOString()
-        },
-        packages: packages
-    };
-
-    const blob = new Blob(
-        [JSON.stringify(payload, null, 2)],
-        { type: "application/json;charset=utf-8" }
-    );
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "BLSSNVJ21-package-master.json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-
-    setStorageStatus("Package master exported", "ready");
-    updateStorageCenter();
-}
-
-function bindHistoryButtons() {
-    const saveButton = document.getElementById("saveSnapshotBtn");
-    const clearButton = document.getElementById("clearHistoryBtn");
-
-    if (saveButton) {
-        saveButton.addEventListener("click", saveBillHistory);
-    }
-
-    if (clearButton) {
-        clearButton.addEventListener("click", clearBillHistory);
-    }
-
-    renderBillHistory();
-}
-
-document.addEventListener("DOMContentLoaded", bindHistoryButtons);
-
-function bindStorageCenter() {
-    const exportButton = document.getElementById("exportPackageMasterBtn");
-    const importButton = document.getElementById("importPackageMasterBtn");
-    const resetButton = document.getElementById("resetPackageMasterBtn");
-    const clearButton = document.getElementById("clearBrowserStorageBtn");
-    const fileInput = document.getElementById("packageMasterFileInput");
-
-    if (exportButton) {
-        exportButton.addEventListener("click", exportPackageMaster);
-    }
-
-    if (importButton && fileInput) {
-        importButton.addEventListener("click", function () {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener("change", async function () {
-            const file = fileInput.files && fileInput.files[0];
-            if (!file) return;
-
-            try {
-                const parsed = JSON.parse(await file.text());
-                const packages = Array.isArray(parsed) ? parsed : parsed.packages;
-
-                if (!Array.isArray(packages)) {
-                    throw new Error("Package list missing.");
-                }
-
-                const cleaned = packages
-                    .filter(item => item && typeof item === "object")
-                    .map(item => ({
-                        code: String(item.code || item.packageCode || "").trim(),
-                        name: String(item.name || "").trim(),
-                        type: String(item.type || item.packageType || "").trim(),
-                        procedureCost: item.procedureCost ?? "",
-                        stratificationCost: item.stratificationCost ?? "",
-                        qty: item.qty ?? "",
-                        packageCost: item.packageCost ?? "",
-                        adjustmentFactor: item.adjustmentFactor ?? "",
-                        incentives: item.incentives ?? item.incentive ?? "",
-                        totalAmount: item.totalAmount ?? "",
-                        remarks: item.remarks ?? ""
-                    }))
-                    .filter(item => item.code);
-
-                if (!cleaned.length) {
-                    throw new Error("No valid package records found.");
-                }
-
-                window.localStorage.setItem(
-                    PACKAGE_STORAGE_KEY,
-                    JSON.stringify(cleaned)
-                );
-
-                setupPackageAutocomplete();
-                setStorageStatus(cleaned.length + " package(s) imported locally", "ready");
-                updateStorageCenter();
-                window.alert("Package master imported successfully and stored only in this browser.");
-            } catch (error) {
-                console.error("Package import failed:", error);
-                setStorageStatus("Package import failed", "error");
-                window.alert("Unable to import the package master. Please select a valid BLSSNVJ21 package JSON file.");
-            } finally {
-                fileInput.value = "";
-            }
-        });
-    }
-
-    if (resetButton) {
-        resetButton.addEventListener("click", function () {
-            const confirmed = window.confirm(
-                "Reset the browser package master to the built-in starter packages?"
-            );
-            if (!confirmed) return;
-
-            window.localStorage.removeItem(PACKAGE_STORAGE_KEY);
-            loadPackages();
-            setupPackageAutocomplete();
-            setStorageStatus("Package master reset locally", "ready");
-            updateStorageCenter();
-        });
-    }
-
-    if (clearButton) {
-        clearButton.addEventListener("click", function () {
-            const confirmed = window.confirm(
-                "Clear this app's saved bill draft and package master from this browser? This cannot be undone."
-            );
-            if (!confirmed) return;
-
-            window.localStorage.removeItem(STORAGE_KEY);
-            window.localStorage.removeItem(PACKAGE_STORAGE_KEY);
-            window.localStorage.removeItem(HISTORY_STORAGE_KEY);
-
-            setStorageStatus("Browser app data cleared", "ready");
-            updateStorageCenter();
-            window.location.reload();
-        });
-    }
-
-    updateStorageCenter();
-}
-
-document.addEventListener("DOMContentLoaded", bindStorageCenter);
-
-window.addEventListener("storage", function (event) {
-    if (event.key === STORAGE_KEY || event.key === PACKAGE_STORAGE_KEY || event.key === HISTORY_STORAGE_KEY) {
-        updateStorageCenter();
-        renderBillHistory();
+    if (key === "enter") {
+        event.preventDefault();
+        printBill();
+    } else if (key === "n") {
+        event.preventDefault();
+        newBill();
+    } else if (key === "a") {
+        event.preventDefault();
+        addBillingRow();
     }
 });
 
