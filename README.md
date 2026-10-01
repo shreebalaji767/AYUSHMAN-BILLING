@@ -4,7 +4,7 @@ Browser-based Ayushman billing application for creating, editing, saving, and pr
 
 ## Version
 
-**2026.10.3**
+**2026.10.4**
 
 ## Storage model
 
@@ -127,7 +127,7 @@ Open:
 The health response reports:
 
 ```json
-{"status":"ok","service":"BLSSNVJ21","version":"2026.10.3","storage":"browser-only"}
+{"status":"ok","service":"BLSSNVJ21","version":"2026.10.4","storage":"browser-only"}
 ```
 
 ## Printing / PDF
