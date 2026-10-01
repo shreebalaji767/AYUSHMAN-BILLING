@@ -1902,8 +1902,145 @@ window.applyPackageToRow =
    Browser-only tools: export, import, storage status, shortcuts
 ============================================================ */
 
-const APP_VERSION = "2026.10";
-const BILL_SCHEMA_VERSION = 2;
+const APP_VERSION = "2026.10.1";
+const BILL_SCHEMA_VERSION = 3;
+const HISTORY_STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILL_HISTORY_V1";
+const HISTORY_LIMIT = 20;
+
+function getBillHistory() {
+    try {
+        const raw = window.localStorage.getItem(HISTORY_STORAGE_KEY);
+        const history = raw ? JSON.parse(raw) : [];
+        return Array.isArray(history) ? history : [];
+    } catch (error) {
+        console.warn("Unable to read local bill history:", error);
+        return [];
+    }
+}
+
+function saveBillHistory() {
+    try {
+        const current = getDraftData();
+        const name = String(current.patient?.patientName || "").trim() || "Unnamed Patient";
+        const now = new Date();
+
+        const snapshot = {
+            id: "bill-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+            patientName: name,
+            ipdNo: String(current.patient?.ipdNo || "").trim(),
+            savedAt: now.toISOString(),
+            data: current
+        };
+
+        const history = getBillHistory().filter(item => item && item.data);
+        history.unshift(snapshot);
+
+        window.localStorage.setItem(
+            HISTORY_STORAGE_KEY,
+            JSON.stringify(history.slice(0, HISTORY_LIMIT))
+        );
+
+        renderBillHistory();
+        setStorageStatus("Bill snapshot saved locally", "ready");
+    } catch (error) {
+        console.warn("Unable to save bill snapshot:", error);
+        setStorageStatus("Unable to save snapshot", "error");
+    }
+}
+
+function restoreHistoryItem(id) {
+    const item = getBillHistory().find(entry => entry.id === id);
+    if (!item || !item.data) return;
+
+    const data = item.data;
+
+    Object.entries(data.patient || {}).forEach(([field, value]) => setFieldValue(field, value));
+    Object.entries(data.totals || {}).forEach(([field, value]) => setFieldValue(field, value));
+    setFieldValue("billRemarks", data.remarks || "");
+
+    const body = document.getElementById("billingBody");
+    if (body) {
+        body.innerHTML = "";
+        billingRowNumber = 0;
+        (Array.isArray(data.rows) && data.rows.length ? data.rows : [{}]).forEach(row => addBillingRow(row));
+        updateRowNumbers();
+    }
+
+    saveDraft();
+    setStorageStatus("Bill restored from browser history", "ready");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteHistoryItem(id) {
+    const history = getBillHistory().filter(item => item.id !== id);
+    try {
+        window.localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+        renderBillHistory();
+        setStorageStatus("History item deleted locally", "ready");
+    } catch (error) {
+        setStorageStatus("Unable to update history", "error");
+    }
+}
+
+function clearBillHistory() {
+    if (!window.confirm("Delete all saved bill snapshots from this browser?")) return;
+    window.localStorage.removeItem(HISTORY_STORAGE_KEY);
+    renderBillHistory();
+    updateStorageCenter();
+    setStorageStatus("Bill history cleared locally", "ready");
+}
+
+function renderBillHistory() {
+    const list = document.getElementById("billHistoryList");
+    if (!list) return;
+
+    const history = getBillHistory();
+
+    if (!history.length) {
+        list.innerHTML = '<div class="history-empty">No local bill snapshots yet.</div>';
+        return;
+    }
+
+    list.innerHTML = "";
+
+    history.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const details = document.createElement("div");
+        details.className = "history-details";
+
+        const patient = document.createElement("strong");
+        patient.textContent = item.patientName || "Unnamed Patient";
+
+        const meta = document.createElement("span");
+        const date = new Date(item.savedAt);
+        meta.textContent =
+            (item.ipdNo ? "IPD " + item.ipdNo + " · " : "") +
+            (Number.isNaN(date.getTime()) ? item.savedAt : date.toLocaleString());
+
+        details.append(patient, meta);
+
+        const actions = document.createElement("div");
+        actions.className = "history-actions";
+
+        const restore = document.createElement("button");
+        restore.type = "button";
+        restore.className = "btn btn-secondary";
+        restore.textContent = "Restore";
+        restore.addEventListener("click", () => restoreHistoryItem(item.id));
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "btn btn-danger";
+        remove.textContent = "Delete";
+        remove.addEventListener("click", () => deleteHistoryItem(item.id));
+
+        actions.append(restore, remove);
+        row.append(details, actions);
+        list.appendChild(row);
+    });
+}
 
 function setStorageStatus(message, state = "ready") {
     let status = document.getElementById("storageStatus");
@@ -2217,8 +2354,9 @@ function bindStorageCenter() {
 document.addEventListener("DOMContentLoaded", bindStorageCenter);
 
 window.addEventListener("storage", function (event) {
-    if (event.key === STORAGE_KEY || event.key === PACKAGE_STORAGE_KEY) {
+    if (event.key === STORAGE_KEY || event.key === PACKAGE_STORAGE_KEY || event.key === HISTORY_STORAGE_KEY) {
         updateStorageCenter();
+        renderBillHistory();
     }
 });
 
