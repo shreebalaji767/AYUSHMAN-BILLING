@@ -846,18 +846,7 @@
     src="{{ url_for('static', filename='js/app.js', v='2026.10.4') }}"
 ></script>
 
-<script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-        navigator.serviceWorker.register(
-            "{{ url_for('sw') }}",
-            { scope: "/" }
-        ).catch(function (error) {
-            console.warn("PWA service worker registration failed:", error);
-        });
-    });
-}
-</script>
+
 
 
 </body>
