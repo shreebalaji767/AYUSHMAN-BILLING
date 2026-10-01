@@ -770,9 +770,22 @@ function getDraftData() {
 
 function saveDraft() {
     try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(getDraftData()));
+        const payload = getDraftData();
+        payload.meta = {
+            app: "BLSSNVJ21",
+            version: APP_VERSION || "2026.10",
+            schemaVersion: BILL_SCHEMA_VERSION || 2,
+            savedAt: new Date().toISOString()
+        };
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        if (typeof setStorageStatus === "function") {
+            setStorageStatus("Saved locally", "ready");
+        }
     } catch (error) {
         console.warn("Browser storage unavailable:", error);
+        if (typeof setStorageStatus === "function") {
+            setStorageStatus("Local save unavailable", "error");
+        }
     }
 }
 
@@ -2136,7 +2149,7 @@ function initializeUpgradeFeatures() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);
+document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);\n\nwindow.addEventListener("beforeunload", saveDraft);\nwindow.addEventListener("pagehide", saveDraft);\n
 
 /* ============================================================
    PWA SUPPORT
