@@ -1,4 +1,4 @@
-const CACHE_NAME = "ayushman-billing-v1";
+const CACHE_NAME = "ayushman-billing-v2";
 
 const APP_SHELL = [
   "/",
@@ -7,7 +7,8 @@ const APP_SHELL = [
   "/static/js/app.js",
   "/static/manifest.webmanifest",
   "/static/icons/icon-192.svg",
-  "/static/icons/icon-512.svg"
+  "/static/icons/icon-512.svg",
+  "/static/icons/favicon.svg"
 ];
 
 self.addEventListener("install", (event) => {
