@@ -1946,6 +1946,198 @@ window.findPackage =
 window.applyPackageToRow =
     applyPackageToRow;
 
+
+/* ============================================================
+   BLSSNVJ21 APPLICATION UPGRADE
+   Browser-only tools: export, import, storage status, shortcuts
+============================================================ */
+
+const APP_VERSION = "2026.10";
+const BILL_SCHEMA_VERSION = 2;
+
+function setStorageStatus(message, state = "ready") {
+    let status = document.getElementById("storageStatus");
+
+    if (!status) {
+        status = document.createElement("div");
+        status.id = "storageStatus";
+        status.className = "storage-status";
+        status.setAttribute("role", "status");
+        status.setAttribute("aria-live", "polite");
+
+        const actions = document.querySelector(".bottom-actions");
+        if (actions) actions.prepend(status);
+    }
+
+    status.textContent = message;
+    status.dataset.state = state;
+}
+
+function browserStorageAvailable() {
+    try {
+        const key = "__BLSSNVJ21_STORAGE_TEST__";
+        localStorage.setItem(key, "1");
+        localStorage.removeItem(key);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function createBrowserTools() {
+    const actions = document.querySelector(".bottom-actions");
+    if (!actions || document.getElementById("browserTools")) return;
+
+    const group = document.createElement("div");
+    group.id = "browserTools";
+    group.className = "browser-tools";
+
+    const exportButton = document.createElement("button");
+    exportButton.type = "button";
+    exportButton.className = "btn btn-secondary";
+    exportButton.textContent = "Export Bill";
+    exportButton.title = "Download the current bill as JSON";
+    exportButton.addEventListener("click", exportBillData);
+
+    const importButton = document.createElement("button");
+    importButton.type = "button";
+    importButton.className = "btn btn-secondary";
+    importButton.textContent = "Import Bill";
+    importButton.title = "Load a previously exported bill";
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".json,application/json";
+    fileInput.hidden = true;
+
+    importButton.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", async function () {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+
+        try {
+            const data = JSON.parse(await file.text());
+
+            if (!data || typeof data !== "object") {
+                throw new Error("Invalid bill file.");
+            }
+
+            if (!Array.isArray(data.billing)) {
+                throw new Error("Billing rows are missing.");
+            }
+
+            importBillData(data);
+            saveDraft();
+            setStorageStatus("Bill imported and saved locally", "ready");
+        } catch (error) {
+            console.error("Import failed:", error);
+            setStorageStatus("Import failed: invalid JSON bill", "error");
+            window.alert("Unable to import this bill. Please select a valid BLSSNVJ21 JSON export.");
+        } finally {
+            fileInput.value = "";
+        }
+    });
+
+    const copyButton = document.createElement("button");
+    copyButton.type = "button";
+    copyButton.className = "btn btn-secondary";
+    copyButton.textContent = "Copy JSON";
+    copyButton.title = "Copy the current bill JSON to the clipboard";
+    copyButton.addEventListener("click", async function () {
+        try {
+            await navigator.clipboard.writeText(
+                JSON.stringify(collectBillData(), null, 2)
+            );
+            setStorageStatus("Bill JSON copied to clipboard", "ready");
+        } catch (error) {
+            setStorageStatus("Clipboard access unavailable", "error");
+        }
+    });
+
+    group.append(exportButton, importButton, copyButton, fileInput);
+    actions.prepend(group);
+}
+
+function exportBillData() {
+    const data = collectBillData();
+
+    data.meta = {
+        app: "BLSSNVJ21",
+        version: APP_VERSION,
+        schemaVersion: BILL_SCHEMA_VERSION,
+        exportedAt: new Date().toISOString()
+    };
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "BLSSNVJ21-ayushman-bill.json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    setStorageStatus("Bill exported", "ready");
+}
+
+function upgradeStorageSchema() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+
+        if (!data.meta) {
+            data.meta = {
+                app: "BLSSNVJ21",
+                schemaVersion: BILL_SCHEMA_VERSION,
+                upgradedAt: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+    } catch (error) {
+        console.warn("Storage migration skipped:", error);
+    }
+}
+
+function initializeUpgradeFeatures() {
+    createBrowserTools();
+    upgradeStorageSchema();
+
+    if (browserStorageAvailable()) {
+        setStorageStatus("Browser storage ready", "ready");
+    } else {
+        setStorageStatus("Browser storage unavailable", "error");
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "s") {
+            event.preventDefault();
+            exportBillData();
+        }
+
+        if (event.ctrlKey && event.key === "Enter") {
+            event.preventDefault();
+            addBillingRow();
+        }
+
+        if (event.key === "Escape") {
+            const active = document.activeElement;
+            if (active && active.matches("input, textarea")) {
+                active.blur();
+            }
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);
+
 /* ============================================================
    PWA SUPPORT
 ============================================================ */
