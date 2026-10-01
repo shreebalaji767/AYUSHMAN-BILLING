@@ -17,11 +17,11 @@ Python 3.14.8 is the current Python 3.14 maintenance release as of 30 September 
 
 - Patient billing form
 - Editable billing rows
-- Ayushman package master loaded from `data/packages.json`
+- Browser-only Ayushman package master with local import/export
 - Print / Save as PDF workflow
 - Hospital letterhead print spacing
 - Responsive screen layout
-- No automatic patient-billing storage
+- Automatic local draft recovery and local bill history (up to 20 snapshots)
 - Health-check endpoint at `/health`
 
 ## Installation
@@ -82,7 +82,7 @@ Open:
 Expected response:
 
 ```json
-{"status":"ok","service":"ayushman-billing"}
+{"status":"ok","service":"BLSSNVJ21","version":"2026.10.1","storage":"browser-only"}
 ```
 
 ## PDF / printing
@@ -130,6 +130,9 @@ The 2026 upgrade:
 - Adds browser security headers including CSP and Permissions-Policy.
 - Uses `pathlib` for cross-platform file handling.
 - Seeds the package master into browser `localStorage` and uses browser storage for package lookup.
+- Adds a browser-only storage center with package-master import/export/reset and app-data clearing.
+- Adds local bill snapshot history with restore/delete/clear controls; history never leaves the browser.
+- Versions the bill storage schema and keeps the local storage workflow recoverable.
 - Removes the package API; the browser does not request patient or package data from a server endpoint.
 - Refreshes the PWA cache namespace so upgraded assets are picked up.
 - Keeps the existing UI, billing workflow, and print layout intact.
@@ -143,7 +146,7 @@ This version includes optional Progressive Web App support:
 - Service Worker: `static/sw.js`
 - Install button: shown when the browser exposes the PWA install prompt
 - Offline app-shell caching for the main billing screen
-- Package master uses network-first loading and can fall back to the last cached response
+- The application shell is cached for offline startup; billing and package data remain local to the browser
 - Standalone app mode on supported browsers
 
 ### Installing
