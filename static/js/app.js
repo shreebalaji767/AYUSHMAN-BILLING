@@ -1,7 +1,7 @@
 /* BLSSNVJ21 Ayushman Billing — stable client runtime */
 "use strict";
 
-const APP_VERSION = "2026.10.6";
+const APP_VERSION = "2026.10.7";
 const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
 
@@ -248,7 +248,15 @@ function restoreDraft() {
         if (!raw) return false;
 
         const draft = JSON.parse(raw);
-        if (!draft || typeof draft !== "object") return false;
+        if (!draft || typeof draft !== "object") {
+            localStorage.removeItem(STORAGE_KEY);
+            return false;
+        }
+
+        if (draft.meta?.app && draft.meta.app !== "BLSSNVJ21") {
+            localStorage.removeItem(STORAGE_KEY);
+            return false;
+        }
 
         Object.entries(draft.patient || {}).forEach(([id, v]) => setValue(id, v));
         Object.entries(draft.totals || {}).forEach(([id, v]) => setValue(id, v));
