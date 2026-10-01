@@ -1515,3 +1515,120 @@ textarea:focus-visible {
     }
 
 }
+
+/* ============================================================
+   BLSSNVJ21 UPGRADE CONTROLS
+============================================================ */
+
+.browser-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.storage-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid #d3d9df;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #4d5965;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.storage-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    border-radius: 50%;
+    background: #237a4b;
+}
+
+.storage-status[data-state="error"] {
+    color: #8f2929;
+    border-color: #e2bcbc;
+}
+
+.storage-status[data-state="error"]::before {
+    background: #b83232;
+}
+
+@media (max-width: 900px) {
+    .bottom-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .browser-tools {
+        width: 100%;
+    }
+
+    .storage-status {
+        order: -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .topbar-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .page-container {
+        padding: 10px;
+    }
+
+    .section-card {
+        padding: 11px;
+    }
+
+    .patient-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-grid .form-field.wide {
+        grid-column: span 1;
+    }
+
+    .patient-grid .form-field {
+        grid-template-columns: 110px minmax(0, 1fr);
+    }
+
+    .billing-total-row {
+        grid-template-columns: 1fr;
+    }
+
+    .billing-total-row > label,
+    .billing-total-row > span {
+        text-align: left;
+    }
+
+    .browser-tools .btn,
+    .bottom-actions > .btn {
+        flex: 1 1 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
+}
