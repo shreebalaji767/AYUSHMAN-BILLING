@@ -83,7 +83,7 @@ def health():
     return jsonify({
         "status": "ok",
         "service": "BLSSNVJ21",
-        "version": "2026.10.10",
+        "version": "2026.10.11",
         "storage": "browser-only"
     })
 
