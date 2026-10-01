@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request, send_from_directory
 
 BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__)
@@ -43,6 +43,13 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/sw.js")
+def service_worker():
+    response = send_from_directory(BASE_DIR / "static", "sw.js")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+
+
 @app.get("/robots.txt")
 def robots():
     return Response(
@@ -67,7 +74,7 @@ def health():
     return jsonify({
         "status": "ok",
         "service": "BLSSNVJ21",
-        "version": "2026.10.3",
+        "version": "2026.10.4",
         "storage": "browser-only"
     })
 
