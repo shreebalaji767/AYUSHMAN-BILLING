@@ -11,30 +11,44 @@
     >
 
     <meta name="theme-color" content="#173b67">
+    <meta name="color-scheme" content="light">
     <meta name="application-name" content="BLSSNVJ21">
+    <meta name="apple-mobile-web-app-title" content="BLSSNVJ21">
     <meta name="author" content="BLSSNVJ21">
-    <meta name="description" content="BLSSNVJ21 browser-based Ayushman billing application for hospital package billing, patient details, billing totals, printing and PDF generation. Data is stored locally in the browser.">
-    <meta name="keywords" content="BLSSNVJ21, Ayushman billing, hospital billing, package billing, PM-JAY billing, hospital billing software, browser billing application">
+    <meta name="creator" content="BLSSNVJ21">
+    <meta name="publisher" content="BLSSNVJ21">
+    <meta name="generator" content="BLSSNVJ21 Ayushman Billing">
+    <meta name="description" content="BLSSNVJ21 Ayushman Billing is a browser-based hospital billing application for patient details, Ayushman package billing, editable billing rows, billing totals, printing and PDF generation. Data stays in browser storage.">
+    <meta name="keywords" content="BLSSNVJ21, BLSSNVJ21 Ayushman Billing, Ayushman billing software, Ayushman hospital billing, PM-JAY billing, hospital package billing, hospital billing software, medical billing, billing application, browser billing software">
+    <meta name="subject" content="BLSSNVJ21 Ayushman hospital billing application">
+    <meta name="classification" content="Business Software, Hospital Billing Software">
+    <meta name="category" content="Hospital Billing Software">
+    <meta name="coverage" content="India">
+    <meta name="language" content="English (India)">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="format-detection" content="telephone=no">
-    <link rel="canonical" href="{{ request.url }}">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="canonical" href="{{ request.url_root }}">
+    <link rel="sitemap" type="application/xml" href="{{ url_for('sitemap') }}">
 
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:title" content="BLSSNVJ21 | Ayushman Billing">
-    <meta property="og:description" content="Browser-based hospital Ayushman billing application with local browser storage, package billing and print-ready billing documents.">
+    <meta property="og:url" content="{{ request.url_root }}">
+    <meta property="og:title" content="BLSSNVJ21 | Ayushman Billing Software">
+    <meta property="og:description" content="BLSSNVJ21 browser-based Ayushman hospital billing software for patient details, package billing, billing totals and print-ready documents.">
     <meta property="og:site_name" content="BLSSNVJ21">
     <meta property="og:locale" content="en_IN">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="BLSSNVJ21 | Ayushman Billing">
-    <meta name="twitter:description" content="Browser-based Ayushman hospital billing application with local browser storage.">
-    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="BLSSNVJ21 | Ayushman Billing Software">
+    <meta name="twitter:description" content="BLSSNVJ21 browser-based Ayushman hospital billing software with browser-only storage and print-ready billing documents.">
+    <meta name="twitter:url" content="{{ request.url_root }}">
+
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BLSSNVJ21">
 
     <link
         rel="manifest"
@@ -67,11 +81,13 @@
       "name": "BLSSNVJ21 Ayushman Billing",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web Browser",
-      "softwareVersion": "2026.10.8",
+      ""softwareVersion": "2026.10.8",
       "inLanguage": "en-IN",
       "description": "Browser-based Ayushman billing application with browser-only storage, editable billing rows and print-ready billing documents."
     }
-    </script>\n<!-- =====================================================
+    </script>
+
+<!-- =====================================================
          MAIN STYLESHEET
     ====================================================== -->
 
