@@ -1,4 +1,4 @@
-const CACHE_NAME = "blssnvj21-ayushman-billing-v3";
+const CACHE_NAME = "blssnvj21-ayushman-billing-v4";
 
 const APP_SHELL = [
   "/",
