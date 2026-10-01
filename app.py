@@ -64,7 +64,7 @@ def sitemap():
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "service": "BLSSNVJ21", "version": "2026.10", "storage": "browser-only"})
+    return jsonify({"status": "ok", "service": "BLSSNVJ21", "version": "2026.10.1", "storage": "browser-only"})
 
 
 if __name__ == "__main__":
