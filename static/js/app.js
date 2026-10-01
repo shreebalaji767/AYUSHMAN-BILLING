@@ -28,7 +28,7 @@
    GLOBAL APPLICATION STATE
 ============================================================ */
 
-const APP_VERSION = "2026.10.4";
+const APP_VERSION = "2026.10.5";
 const BILL_SCHEMA_VERSION = 3;
 let deferredInstallPrompt = null;
 
@@ -629,7 +629,7 @@ function deleteBillingRow(row) {
             }
         );
 
-
+        markBillDirty();
         return;
 
     }
@@ -1237,19 +1237,6 @@ document.addEventListener("keydown", function (event) {
 /* ============================================================
    PWA INSTALL + SERVICE WORKER
 ============================================================ */
-
-window.addEventListener("beforeinstallprompt", function (event) {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    const button = document.getElementById("installPwaBtn");
-    if (button) button.hidden = false;
-});
-
-window.addEventListener("appinstalled", function () {
-    deferredInstallPrompt = null;
-    const button = document.getElementById("installPwaBtn");
-    if (button) button.hidden = true;
-});
 
 window.addEventListener("load", function () {
     if (!("serviceWorker" in navigator)) return;
