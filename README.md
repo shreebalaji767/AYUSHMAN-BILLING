@@ -4,7 +4,7 @@ Browser-based Ayushman billing application for creating, editing, saving, and pr
 
 ## Version
 
-**2026.10.7**
+**2026.10.8**
 
 ## Storage model
 
@@ -45,6 +45,8 @@ If there are unsaved changes, the application warns before the page is closed or
 - Responsive desktop, tablet, and mobile layout
 - PWA manifest and service worker
 - Browser tab favicon and app icons
+- Service-worker update and offline fallback handling
+- Accessibility-friendly dynamic row actions
 - SEO metadata
 - OpenGraph metadata
 - Twitter metadata
@@ -67,7 +69,7 @@ The normal **Save** action is the single explicit way to save the current bill.
 
 ## Installation
 
-Use Python 3.14.8 or a compatible supported Python version.
+Use **Python 3.14.8** or another supported Python release. Python 3.14.8 is the current 3.14 maintenance release as of this version.
 
 ```text
 python -m venv .venv
@@ -127,7 +129,7 @@ Open:
 The health response reports:
 
 ```json
-{"status":"ok","service":"BLSSNVJ21","version":"2026.10.7","storage":"browser-only"}
+{"status":"ok","service":"BLSSNVJ21","version":"2026.10.8","storage":"browser-only"}
 ```
 
 ## Printing / PDF
