@@ -1,7 +1,7 @@
 /* BLSSNVJ21 Ayushman Billing — stable client runtime */
 "use strict";
 
-const APP_VERSION = "2026.10.7";
+const APP_VERSION = "2026.10.8";
 const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
 
@@ -169,6 +169,7 @@ function addRow(data = {}, focus = true) {
     del.type = "button";
     del.className = "delete-row";
     del.textContent = "Delete";
+    del.setAttribute("aria-label", "Delete billing row");
     del.addEventListener("click", () => deleteRow(row));
 
     action.appendChild(del);
@@ -365,11 +366,14 @@ function bindUI() {
     });
 }
 
-function registerServiceWorker() {
+async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch((error) => {
+    try {
+        const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+        await registration.update();
+    } catch (error) {
         console.warn("BLSSNVJ21 service worker registration failed:", error);
-    });
+    }
 }
 
 function startApp() {
@@ -383,7 +387,7 @@ function startApp() {
             setStatus("Ready — not saved", "ready");
         }
 
-        registerServiceWorker();
+        void registerServiceWorker();
     } catch (error) {
         console.error("BLSSNVJ21 startup error:", error);
         setStatus("Application startup error — check browser console", "error");
