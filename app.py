@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, Response, jsonify, render_template
 
 BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__)
@@ -42,9 +42,29 @@ def index():
     return render_template("index.html")
 
 
+
+@app.get("/robots.txt")
+def robots():
+    return Response(
+        "User-agent: *\\nAllow: /\\nSitemap: /sitemap.xml\\n",
+        mimetype="text/plain"
+    )
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    return Response(
+        "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>"
+        "<urlset xmlns=\\\"http://www.sitemaps.org/schemas/sitemap/0.9\\\">"
+        "<url><loc>/</loc></url>"
+        "</urlset>",
+        mimetype="application/xml"
+    )
+
+
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "service": "ayushman-billing"})
+    return jsonify({"status": "ok", "service": "BLSSNVJ21", "version": "2026.10", "storage": "browser-only"})
 
 
 if __name__ == "__main__":
