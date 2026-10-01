@@ -1725,3 +1725,104 @@ textarea:focus-visible {
         display: none !important;
     }
 }
+
+
+/* ============================================================
+   LOCAL BILL HISTORY
+============================================================ */
+
+.history-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #dfe4e9;
+    color: #34404b;
+    font-size: 11px;
+}
+
+.history-header strong {
+    margin-right: auto;
+}
+
+.bill-history-list {
+    display: grid;
+    gap: 6px;
+    margin-top: 7px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 9px;
+    border: 1px solid #d9dfe5;
+    border-radius: 4px;
+    background: #ffffff;
+}
+
+.history-details {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.history-details strong {
+    overflow: hidden;
+    color: #26313b;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history-details span {
+    color: #74808b;
+    font-size: 9px;
+}
+
+.history-actions {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+}
+
+.history-empty {
+    padding: 8px 9px;
+    border: 1px dashed #cbd2d9;
+    border-radius: 4px;
+    color: #7a858f;
+    background: #fafbfc;
+    font-size: 10px;
+}
+
+@media (max-width: 600px) {
+    .history-header {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .history-header strong {
+        width: 100%;
+    }
+
+    .history-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .history-actions {
+        margin-left: 0;
+    }
+
+    .history-actions .btn {
+        flex: 1;
+    }
+}
+
+@media print {
+    .history-header,
+    .bill-history-list {
+        display: none !important;
+    }
+}
