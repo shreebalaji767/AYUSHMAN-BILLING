@@ -1,11 +1,11 @@
-/* BLSSNVJ21 PWA service worker 2026.10.10 */
-const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.10";
+/* BLSSNVJ21 PWA service worker 2026.10.11 */
+const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.11";
 
 const APP_SHELL = [
   "/",
-  "/static/css/style.css?v=2026.10.10",
-  "/static/css/print.css?v=2026.10.10",
-  "/static/js/app.js?v=2026.10.10",
+  "/static/css/style.css?v=2026.10.11",
+  "/static/css/print.css?v=2026.10.11",
+  "/static/js/app.js?v=2026.10.11",
   "/static/manifest.webmanifest",
   "/static/icons/icon-192.svg",
   "/static/icons/icon-512.svg",
