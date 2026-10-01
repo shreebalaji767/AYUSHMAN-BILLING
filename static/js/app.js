@@ -791,7 +791,7 @@ function saveDraft() {
         const payload = getDraftData();
         payload.meta = {
             app: "BLSSNVJ21",
-            version: APP_VERSION || "2026.10.1",
+            version: APP_VERSION || "2026.10.2",
             schemaVersion: BILL_SCHEMA_VERSION || 2,
             savedAt: new Date().toISOString()
         };
