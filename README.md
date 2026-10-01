@@ -129,8 +129,8 @@ The 2026 upgrade:
 - Adds a lightweight `/health` endpoint.
 - Adds browser security headers including CSP and Permissions-Policy.
 - Uses `pathlib` for cross-platform file handling.
-- Validates that the package master is a JSON array.
-- Uses the Flask `/api/packages` endpoint consistently from the browser client.
+- Seeds the package master into browser `localStorage` and uses browser storage for package lookup.
+- Removes the package API; the browser does not request patient or package data from a server endpoint.
 - Refreshes the PWA cache namespace so upgraded assets are picked up.
 - Keeps the existing UI, billing workflow, and print layout intact.
 
