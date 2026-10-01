@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import secrets
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
@@ -38,9 +39,14 @@ def add_security_headers(response):
     return response
 
 
+@app.before_request
+def set_csp_nonce():
+    request._csp_nonce = secrets.token_urlsafe(16)
+
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", csp_nonce=request._csp_nonce)
 
 
 @app.get("/sw.js")
@@ -74,7 +80,7 @@ def health():
     return jsonify({
         "status": "ok",
         "service": "BLSSNVJ21",
-        "version": "2026.10.4",
+        "version": "2026.10.5",
         "storage": "browser-only"
     })
 
