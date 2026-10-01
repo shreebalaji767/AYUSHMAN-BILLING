@@ -30,6 +30,10 @@
 
 let billingRowNumber = 0;
 
+const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
+const PACKAGE_STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_PACKAGE_MASTER_V1";
+let saveTimer = null;
+
 
 /* ============================================================
    DOM READY
@@ -51,6 +55,12 @@ function initializeApplication() {
     bindButtons();
 
     initializeExistingRows();
+
+    restoreDraft();
+
+    bindStorageListeners();
+
+    saveDraft();
 
     /*
        If there are no rows, create one empty row.
@@ -544,6 +554,8 @@ function addBillingRow(data = {}) {
 
     updateRowNumbers();
 
+    scheduleSave();
+
 }
 
 
@@ -703,6 +715,140 @@ function attachDeleteButton(row) {
 
 
 /* ============================================================
+   BROWSER-ONLY STORAGE
+   ------------------------------------------------------------
+   Patient/billing data is stored only in the user's browser
+   using localStorage. Nothing is posted to the Flask server.
+============================================================ */
+
+function getDraftData() {
+    const data = {
+        patient: {},
+        totals: {},
+        remarks: "",
+        rows: []
+    };
+
+    [
+        "ipdNo", "uhid", "patientName", "age", "sdwo",
+        "gender", "maritalStatus", "admissionDate",
+        "diagnosis", "address"
+    ].forEach(function (id) {
+        data.patient[id] = getFieldValue(id);
+    });
+
+    [
+        "totalPackageWithoutIncentives",
+        "totalAdjustedPackageAmount",
+        "totalPayableAmount",
+        "eRupiAmount",
+        "miscellaneousAmount"
+    ].forEach(function (id) {
+        data.totals[id] = getFieldValue(id);
+    });
+
+    data.remarks = getFieldValue("billRemarks");
+
+    document.querySelectorAll("#billingBody .billing-row").forEach(function (row) {
+        const inputs = row.querySelectorAll("input");
+        data.rows.push({
+            packageCode: inputs[0]?.value || "",
+            packageType: inputs[1]?.value || "",
+            procedureCost: inputs[2]?.value || "",
+            stratificationCost: inputs[3]?.value || "",
+            qty: inputs[4]?.value || "",
+            packageCost: inputs[5]?.value || "",
+            adjustmentFactor: inputs[6]?.value || "",
+            incentives: inputs[7]?.value || "",
+            totalAmount: inputs[8]?.value || "",
+            remarks: inputs[9]?.value || ""
+        });
+    });
+
+    return data;
+}
+
+function saveDraft() {
+    try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(getDraftData()));
+    } catch (error) {
+        console.warn("Browser storage unavailable:", error);
+    }
+}
+
+function scheduleSave() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(saveDraft, 150);
+}
+
+function removeSavedDraft() {
+    try {
+        window.localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+        console.warn("Unable to clear browser storage:", error);
+    }
+}
+
+function restoreDraft() {
+    try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return;
+
+        Object.entries(data.patient || {}).forEach(function ([id, value]) {
+            setFieldValue(id, value);
+        });
+
+        Object.entries(data.totals || {}).forEach(function ([id, value]) {
+            setFieldValue(id, value);
+        });
+
+        setFieldValue("billRemarks", data.remarks || "");
+
+        const billingBody = document.getElementById("billingBody");
+        if (!billingBody) return;
+
+        billingBody.innerHTML = "";
+        billingRowNumber = 0;
+
+        const rows = Array.isArray(data.rows) && data.rows.length
+            ? data.rows
+            : [{}];
+
+        rows.forEach(function (row) {
+            addBillingRow(row);
+        });
+
+        updateRowNumbers();
+    } catch (error) {
+        console.warn("Unable to restore browser draft:", error);
+    }
+}
+
+function bindStorageListeners() {
+    document.addEventListener("input", function (event) {
+        if (
+            event.target.matches("input, textarea") &&
+            !event.target.closest(".no-storage")
+        ) {
+            scheduleSave();
+        }
+    });
+
+    document.addEventListener("change", function (event) {
+        if (
+            event.target.matches("input, textarea") &&
+            !event.target.closest(".no-storage")
+        ) {
+            scheduleSave();
+        }
+    });
+}
+
+
+/* ============================================================
    CLEAR BILL
 ============================================================ */
 
@@ -845,6 +991,8 @@ function clearBill() {
     */
 
     addBillingRow();
+
+    removeSavedDraft();
 
 }
 
@@ -1115,7 +1263,17 @@ async function loadPackages() {
             await response.json();
 
 
-        return packages;
+        try {
+        const cached = window.localStorage.getItem(PACKAGE_STORAGE_KEY);
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed)) return parsed;
+        }
+    } catch (error) {
+        console.warn("Package cache unavailable:", error);
+    }
+
+    return packages;
 
     }
     catch (error) {
