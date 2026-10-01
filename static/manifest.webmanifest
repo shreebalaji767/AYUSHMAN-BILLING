@@ -1,0 +1,28 @@
+{
+  "name": "AYUSHMAN BILLING",
+  "short_name": "Ayushman Billing",
+  "description": "Hospital billing and package management application.",
+  "lang": "en-IN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "theme_color": "#173b67",
+  "background_color": "#eef1f4",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
