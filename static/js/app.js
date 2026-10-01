@@ -1,9 +1,13 @@
 /* BLSSNVJ21 Ayushman Billing — stable client runtime */
 "use strict";
 
-const APP_VERSION = "2026.10.9";
+const APP_VERSION = "2026.10.10";
 const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
+const LEGACY_STORAGE_KEYS = [
+    "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT",
+    "AYUSHMAN_BILLING_DRAFT"
+];
 
 let rowSequence = 0;
 let billDirty = false;
@@ -25,7 +29,7 @@ function storageAvailable() {
 function setStatus(message, state = "ready") {
     const el = $("storageStatus");
     if (!el) return;
-    el.textContent = message;
+    el.textContent = String(message).replace(/\\n/g, " ").replace(/\\r/g, " ");
     el.dataset.state = state;
 }
 
@@ -233,11 +237,26 @@ function clearBill(confirmFirst = true) {
     rowSequence = 0;
     addRow({}, false);
 
-    try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    try {
+        localStorage.removeItem(STORAGE_KEY);
+        LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+    } catch (_) {}
     billDirty = false;
     setStatus("New bill — not saved", "ready");
     const save = $("saveBillBtn");
-    if (save) save.textContent = "Save";
+    if (save) {
+        save.textContent = "Save";
+        save.dataset.saved = "false";
+    }
+}
+
+function readStoredDraft() {
+    const keys = [STORAGE_KEY, ...LEGACY_STORAGE_KEYS];
+    for (const key of keys) {
+        const raw = localStorage.getItem(key);
+        if (raw) return { key, raw };
+    }
+    return null;
 }
 
 function restoreDraft() {
@@ -247,17 +266,17 @@ function restoreDraft() {
     }
 
     try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return false;
+        const stored = readStoredDraft();
+        if (!stored) return false;
 
-        const draft = JSON.parse(raw);
+        const draft = JSON.parse(stored.raw);
         if (!draft || typeof draft !== "object") {
-            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(stored.key);
             return false;
         }
 
         if (draft.meta?.app && draft.meta.app !== "BLSSNVJ21") {
-            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(stored.key);
             return false;
         }
 
@@ -275,6 +294,12 @@ function restoreDraft() {
         rows.forEach((row) => addRow(row, false));
 
         renumberRows();
+
+        if (stored.key !== STORAGE_KEY) {
+            localStorage.setItem(STORAGE_KEY, stored.raw);
+            localStorage.removeItem(stored.key);
+        }
+
         markClean("Saved bill restored");
         return true;
     } catch (error) {
@@ -285,7 +310,12 @@ function restoreDraft() {
 }
 
 function printBill() {
-    window.print();
+    try {
+        window.print();
+    } catch (error) {
+        console.error("BLSSNVJ21 print error:", error);
+        setStatus("Print failed — please try again", "error");
+    }
 }
 
 function bindUI() {
@@ -371,8 +401,11 @@ function bindUI() {
 async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
     try {
-        const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+        const registration = await navigator.serviceWorker.register("/sw.js?v=2026.10.10", { scope: "/" });
         await registration.update();
+        if (registration.waiting) {
+            registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
     } catch (error) {
         console.warn("BLSSNVJ21 service worker registration failed:", error);
     }
