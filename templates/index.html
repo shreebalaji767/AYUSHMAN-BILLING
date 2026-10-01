@@ -58,7 +58,20 @@
         href="{{ url_for('static', filename='icons/icon-192.svg') }}"
     >
 
-    <title>BLSSNVJ21 | Ayushman Billing Software</title>\n<!-- =====================================================
+    <title>BLSSNVJ21 | Ayushman Billing Software</title>
+
+    <script type="application/ld+json" nonce="{{ csp_nonce }}">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "BLSSNVJ21 Ayushman Billing",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "softwareVersion": "2026.10.7",
+      "inLanguage": "en-IN",
+      "description": "Browser-based Ayushman billing application with browser-only storage, editable billing rows and print-ready billing documents."
+    }
+    </script>\n<!-- =====================================================
          MAIN STYLESHEET
     ====================================================== -->
 
