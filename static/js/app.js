@@ -19,7 +19,7 @@
    • New Bill button
    • Print / Save PDF
    • Bottom action buttons
-   • Package data loading
+   • Browser-only package master storage
    • Keyboard-friendly operation
 ============================================================ */
 
@@ -1233,74 +1233,69 @@ document.addEventListener(
    OPTIONAL PACKAGE DATA LOADING
 ============================================================ */
 
-async function loadPackages() {
-
+function loadPackages() {
     try {
-
-        const response =
-            await fetch(
-                "/api/packages",
-                {
-                    method: "GET",
-                    cache: "no-cache",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load packages"
-            );
-
-        }
-
-
-        const packages =
-            await response.json();
-
-
-        try {
         const cached = window.localStorage.getItem(PACKAGE_STORAGE_KEY);
+
         if (cached) {
             const parsed = JSON.parse(cached);
-            if (Array.isArray(parsed)) return parsed;
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
         }
-    } catch (error) {
-        console.warn("Package cache unavailable:", error);
-    }
 
-    return packages;
+        const packages = [
+            {
+                code: "PKG001",
+                name: "Sample Package",
+                type: "Procedure",
+                procedureCost: 50000,
+                stratificationCost: 10000,
+                adjustmentFactor: 1,
+                incentive: 0
+            },
+            {
+                code: "PKG002",
+                name: "Sample Surgery Package",
+                type: "Surgery",
+                procedureCost: 75000,
+                stratificationCost: 15000,
+                adjustmentFactor: 1,
+                incentive: 0
+            },
+            {
+                code: "PKG003",
+                name: "Sample Maternity Package",
+                type: "Maternity",
+                procedureCost: 30000,
+                stratificationCost: 5000,
+                adjustmentFactor: 1,
+                incentive: 0
+            }
+        ];
 
-    }
-    catch (error) {
-
-        console.error(
-            "Package loading error:",
-            error
+        window.localStorage.setItem(
+            PACKAGE_STORAGE_KEY,
+            JSON.stringify(packages)
         );
 
-
+        return packages;
+    } catch (error) {
+        console.warn("Browser package storage unavailable:", error);
         return [];
-
     }
-
 }
-
 
 /* ============================================================
    PACKAGE SEARCH HELPER
 ============================================================ */
 
-async function findPackage(
+function findPackage(
     packageCode
 ) {
 
     const packages =
-        await loadPackages();
+        loadPackages();
 
 
     if (
