@@ -40,6 +40,9 @@ def add_security_headers(response):
         "Permissions-Policy",
         "camera=(), microphone=(), geolocation=(), payment=()"
     )
+    response.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
+    response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+    response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
     response.headers.setdefault("Cache-Control", "no-store")
     return response
 
