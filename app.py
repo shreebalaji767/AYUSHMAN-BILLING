@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template
 
 BASE_DIR = Path(__file__).resolve().parent
-PACKAGE_FILE = BASE_DIR / "data" / "packages.json"
-
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
 
@@ -43,25 +40,6 @@ def add_security_headers(response):
 @app.route("/")
 def index():
     return render_template("index.html")
-
-
-@app.get("/api/packages")
-def packages():
-    try:
-        if not PACKAGE_FILE.is_file():
-            return jsonify([])
-
-        with PACKAGE_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
-
-        if not isinstance(data, list):
-            return jsonify({"error": "Package master must contain a JSON array."}), 500
-
-        return jsonify(data)
-
-    except (OSError, json.JSONDecodeError) as exc:
-        app.logger.exception("Unable to load package master")
-        return jsonify({"error": f"Unable to load package master: {exc}"}), 500
 
 
 @app.get("/health")
