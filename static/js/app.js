@@ -554,6 +554,9 @@ function addBillingRow(data = {}) {
 
     updateRowNumbers();
 
+    const packageInput = row.querySelector("input");
+    if (packageInput) packageInput.setAttribute("list", "blssnvj21-package-codes");
+
     scheduleSave();
 
 }
@@ -2119,8 +2122,56 @@ function upgradeStorageSchema() {
     }
 }
 
+function setupPackageAutocomplete() {
+    const packages = loadPackages();
+    const listId = "blssnvj21-package-codes";
+
+    let datalist = document.getElementById(listId);
+    if (!datalist) {
+        datalist = document.createElement("datalist");
+        datalist.id = listId;
+        document.body.appendChild(datalist);
+    }
+
+    datalist.innerHTML = "";
+
+    packages.forEach(function (item) {
+        const option = document.createElement("option");
+        option.value = item.code || item.packageCode || "";
+        option.label = item.name || item.type || option.value;
+        datalist.appendChild(option);
+    });
+
+    document.querySelectorAll("#billingBody .billing-row").forEach(function (row) {
+        const input = row.querySelector("input");
+        if (input) input.setAttribute("list", listId);
+    });
+
+    const body = document.getElementById("billingBody");
+    if (!body || body.dataset.packageBinding === "1") return;
+
+    body.dataset.packageBinding = "1";
+
+    body.addEventListener("change", function (event) {
+        const input = event.target;
+        if (!input.matches("input") || !input.closest(".billing-row")) return;
+
+        const row = input.closest(".billing-row");
+        const firstInput = row.querySelector("input");
+        if (input !== firstInput) return;
+
+        const packageData = findPackage(input.value);
+        if (!packageData) return;
+
+        applyPackageToRow(row, input.value);
+        scheduleSave();
+        setStorageStatus("Package applied from browser master", "ready");
+    });
+}
+
 function initializeUpgradeFeatures() {
     createBrowserTools();
+    setupPackageAutocomplete();
     upgradeStorageSchema();
 
     if (browserStorageAvailable()) {
