@@ -77,13 +77,15 @@
     <script type="application/ld+json" nonce="{{ csp_nonce }}">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
       "name": "BLSSNVJ21 Ayushman Billing",
       "alternateName": "BLSSNVJ21",
       "applicationCategory": "BusinessApplication",
       "applicationSubCategory": "Hospital Billing Software",
       "operatingSystem": "Web Browser",
-      "softwareVersion": "2026.10.8",
+      "softwareVersion": "2026.10.9",
       "inLanguage": "en-IN",
       "isAccessibleForFree": true,
       "description": "BLSSNVJ21 browser-based Ayushman hospital billing application with browser-only storage, editable billing rows, billing totals and print-ready billing documents.",
@@ -91,10 +93,25 @@
         "@type": "Brand",
         "name": "BLSSNVJ21"
       },
-      "publisher": {
-        "@type": "Organization",
-        "name": "BLSSNVJ21"
-      }
+          "publisher": {
+            "@type": "Organization",
+            "name": "BLSSNVJ21"
+          },
+          "url": "{{ request.url_root }}"
+        },
+        {
+          "@type": "WebSite",
+          "name": "BLSSNVJ21",
+          "alternateName": "BLSSNVJ21 Ayushman Billing",
+          "url": "{{ request.url_root }}",
+          "inLanguage": "en-IN"
+        },
+        {
+          "@type": "Organization",
+          "name": "BLSSNVJ21",
+          "url": "{{ request.url_root }}"
+        }
+      ]
     }
     </script><!-- =====================================================
          MAIN STYLESHEET
@@ -102,7 +119,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css', v='2026.10.8') }}"
+        href="{{ url_for('static', filename='css/style.css', v='2026.10.9') }}"
     >
 
 
@@ -112,7 +129,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/print.css', v='2026.10.8') }}"
+        href="{{ url_for('static', filename='css/print.css', v='2026.10.9') }}"
         media="print"
     >
 
@@ -864,7 +881,7 @@
 ========================================================= -->
 
 <script
-    src="{{ url_for('static', filename='js/app.js', v='2026.10.8') }}"
+    src="{{ url_for('static', filename='js/app.js', v='2026.10.9') }}"
 ></script>
 
 
