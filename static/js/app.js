@@ -1789,3 +1789,69 @@ window.findPackage =
 
 window.applyPackageToRow =
     applyPackageToRow;
+
+/* ============================================================
+   PWA SUPPORT
+============================================================ */
+
+let deferredInstallPrompt = null;
+
+document.addEventListener("DOMContentLoaded", function () {
+    registerPWA();
+    setupPWAInstall();
+});
+
+function registerPWA() {
+    if (!("serviceWorker" in navigator)) {
+        return;
+    }
+
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/static/sw.js")
+            .catch(function (error) {
+                console.warn("PWA service worker registration failed:", error);
+            });
+    });
+}
+
+function setupPWAInstall() {
+    const installButton = document.getElementById("installPwaBtn");
+
+    if (!installButton) {
+        return;
+    }
+
+    if (window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true) {
+        installButton.hidden = true;
+        return;
+    }
+
+    window.addEventListener("beforeinstallprompt", function (event) {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        installButton.hidden = false;
+    });
+
+    installButton.addEventListener("click", async function () {
+        if (!deferredInstallPrompt) {
+            return;
+        }
+
+        deferredInstallPrompt.prompt();
+
+        try {
+            await deferredInstallPrompt.userChoice;
+        } catch (error) {
+            console.warn("PWA install prompt failed:", error);
+        }
+
+        deferredInstallPrompt = null;
+        installButton.hidden = true;
+    });
+
+    window.addEventListener("appinstalled", function () {
+        deferredInstallPrompt = null;
+        installButton.hidden = true;
+    });
+}
