@@ -4,7 +4,7 @@ Browser-based Ayushman billing application for creating, editing, saving, and pr
 
 ## Version
 
-**2026.10.8**
+**2026.10.9**
 
 ## Storage model
 
@@ -48,6 +48,7 @@ If there are unsaved changes, the application warns before the page is closed or
 - Service-worker update and offline fallback handling
 - Accessibility-friendly dynamic row actions
 - SEO metadata
+- Schema.org SoftwareApplication, WebSite and Organization structured data
 - OpenGraph metadata
 - Twitter metadata
 - JSON-LD application metadata
@@ -129,7 +130,7 @@ Open:
 The health response reports:
 
 ```json
-{"status":"ok","service":"BLSSNVJ21","version":"2026.10.8","storage":"browser-only"}
+{"status":"ok","service":"BLSSNVJ21","version":"2026.10.9","storage":"browser-only"}
 ```
 
 ## Printing / PDF
