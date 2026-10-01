@@ -2249,6 +2249,23 @@ function exportPackageMaster() {
     updateStorageCenter();
 }
 
+function bindHistoryButtons() {
+    const saveButton = document.getElementById("saveSnapshotBtn");
+    const clearButton = document.getElementById("clearHistoryBtn");
+
+    if (saveButton) {
+        saveButton.addEventListener("click", saveBillHistory);
+    }
+
+    if (clearButton) {
+        clearButton.addEventListener("click", clearBillHistory);
+    }
+
+    renderBillHistory();
+}
+
+document.addEventListener("DOMContentLoaded", bindHistoryButtons);
+
 function bindStorageCenter() {
     const exportButton = document.getElementById("exportPackageMasterBtn");
     const importButton = document.getElementById("importPackageMasterBtn");
