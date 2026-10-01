@@ -1,32 +1,73 @@
-# AYUSHMAN BILLING
+# BLSSNVJ21 — AYUSHMAN BILLING
 
-DB-free Ayushman billing web application for hospital billing and package management.
+Browser-based Ayushman billing application for creating, editing, saving, and printing hospital billing documents.
 
-## Current stack
+## Version
 
-- Python 3.14.8
-- Flask 3.1.3
-- Gunicorn 26.2.0
-- HTML / CSS / JavaScript
-- Browser `localStorage` for patient/billing drafts and package master
-- No database and no server-side patient/billing storage
+**2026.10.2**
 
-Python 3.14.8 is the current Python 3.14 maintenance release as of 30 September 2026. Flask 3.1.3 is the current stable Flask release; Flask 3.2 is still unreleased.
+## Storage model
 
-## Features
+This application uses **browser storage only** for patient and billing data.
 
-- Patient billing form
-- Editable billing rows
-- Browser-only Ayushman package master with local import/export
-- Print / Save as PDF workflow
-- Hospital letterhead print spacing
-- Responsive screen layout
-- Automatic local draft recovery and local bill history (up to 20 snapshots)
-- Health-check endpoint at `/health`
+- Patient data is stored in the browser with `localStorage`.
+- Billing rows and totals are stored in the browser with `localStorage`.
+- Package-master data is available to the browser and is cached locally for package lookup.
+- The Flask server does **not** save patient or billing records to a database.
+- There is **no database** for patient/billing persistence.
+- There is **no automatic bill saving**.
+
+### Manual Save workflow
+
+1. Enter or edit the bill.
+2. The status changes to **Unsaved changes**.
+3. Press **Save** to explicitly write the current bill to browser storage.
+4. The status changes to **Saved to browser storage**.
+5. The saved bill is restored when the application is opened again in the same browser/origin.
+
+You can also use **Ctrl+S** on Windows/Linux or **Cmd+S** on macOS.
+
+If there are unsaved changes, the application warns before the page is closed or reloaded.
+
+## Main features
+
+- BLSSNVJ21 branding
+- Patient information form
+- Editable Ayushman billing table
+- Add and delete billing rows
+- Editable billing totals
+- Manual Save button
+- Browser-storage save verification
+- Saved/unsaved status indicator
+- Ctrl+S / Cmd+S manual save shortcut
+- Unsaved-changes close/reload warning
+- Print / Save as PDF
+- Responsive desktop, tablet, and mobile layout
+- PWA manifest and service worker
+- Browser tab favicon and app icons
+- SEO metadata
+- OpenGraph metadata
+- Twitter metadata
+- JSON-LD application metadata
+- `/health`, `/robots.txt`, and `/sitemap.xml` endpoints
+
+## Intentionally removed
+
+The application no longer exposes:
+
+- Export JSON
+- Import JSON
+- Clear Storage
+- Export Bill
+- Import Bill
+- Copy JSON
+- Browser storage management/history controls
+
+The normal **Save** action is the single explicit way to save the current bill.
 
 ## Installation
 
-Use Python 3.14.8.
+Use Python 3.14.8 or a compatible supported Python version.
 
 ```text
 python -m venv .venv
@@ -43,116 +84,114 @@ python app.py
 
 Open:
 
-`http://127.0.0.1:5000`
+```text
+http://127.0.0.1:5000
+```
 
 ## Same-network use
 
-Start the application on the hospital/server PC.
-
-Find the server PC IPv4 address:
+Start the application on the server PC and find its IPv4 address:
 
 ```text
 ipconfig
 ```
 
-For example:
+Then open the server address from another device on the same network, for example:
 
-`192.168.1.50`
+```text
+http://192.168.1.50:5000
+```
 
-Then another PC, tablet, or Android device on the same network can open:
+## Production
 
-`http://192.168.1.50:5000`
-
-## Production server
-
-For a production deployment, use Gunicorn instead of Flask's development server:
+For Unix-like production environments:
 
 ```text
 gunicorn app:app --bind 0.0.0.0:5000
 ```
 
-On Windows, use `python app.py` for local/server-PC operation because Gunicorn is designed for Unix-like production environments.
+For Windows local/server-PC use:
+
+```text
+python app.py
+```
 
 ## Health check
 
 Open:
 
-`/health`
-
-Expected response:
-
-```json
-{"status":"ok","service":"BLSSNVJ21","version":"2026.10.1","storage":"browser-only"}
+```text
+/health
 ```
 
-## PDF / printing
+The health response reports:
 
-Use **Print / Save PDF** and select:
+```json
+{"status":"ok","service":"BLSSNVJ21","version":"2026.10.2","storage":"browser-only"}
+```
+
+## Printing / PDF
+
+Use **Print / PDF** and select:
 
 - Save as PDF
 - Microsoft Print to PDF
-- Your installed printer
+- An installed printer
 
 The print stylesheet reserves blank space for the hospital letterhead.
 
-Adjust these values in:
+Print layout is controlled by:
 
-`static/css/print.css`
+```text
+static/css/print.css
+```
 
-- `35mm` top header space
-- `25mm` bottom footer space
+## PWA
 
-## Browser-only storage
+PWA files:
 
-All patient, billing, draft, and package-master data used by the application is stored in the browser with `localStorage`. The Flask application does not receive or persist patient/billing data.
+- `static/manifest.webmanifest`
+- `static/sw.js`
+- `static/icons/favicon.svg`
+- `static/icons/icon-192.svg`
+- `static/icons/icon-512.svg`
 
-The package master is seeded into browser storage on first load. Package lookups then use browser storage only.
+Supported browsers can install the application as a standalone app.
 
-Browser storage is origin-specific and persists across browser sessions until the user clears site data.
+PWA installation normally requires HTTPS, except for local development through `localhost` / `127.0.0.1`.
 
-## Package master
+## Security
 
-Package information is stored in:
+The Flask application includes security response headers including:
 
-`data/packages.json`
+- Content Security Policy
+- X-Content-Type-Options
+- X-Frame-Options
+- Referrer-Policy
+- Permissions-Policy
 
-This is package-master information only; it is not a patient billing database.
+Patient and billing persistence remains entirely on the browser side.
 
-## Upgrade notes
+## Project structure
 
-The 2026 upgrade:
+```text
+AYUSHMAN-BILLING/
+├── app.py
+├── requirements.txt
+├── README.md
+├── data/
+├── static/
+│   ├── css/
+│   ├── icons/
+│   ├── js/
+│   ├── manifest.webmanifest
+│   └── sw.js
+└── templates/
+    └── index.html
+```
 
-- Pins Flask to the current stable 3.1.3 release.
-- Pins Gunicorn to 26.2.0.
-- Targets Python 3.14.8.
-- Removes development-debug behavior from the default runtime.
-- Adds a lightweight `/health` endpoint.
-- Adds browser security headers including CSP and Permissions-Policy.
-- Uses `pathlib` for cross-platform file handling.
-- Seeds the package master into browser `localStorage` and uses browser storage for package lookup.
-- Adds a browser-only storage center with package-master import/export/reset and app-data clearing.
-- Adds local bill snapshot history with restore/delete/clear controls; history never leaves the browser.
-- Versions the bill storage schema and keeps the local storage workflow recoverable.
-- Removes the package API; the browser does not request patient or package data from a server endpoint.
-- Refreshes the PWA cache namespace so upgraded assets are picked up.
-- Keeps the existing UI, billing workflow, and print layout intact.
+## Important storage note
 
+Browser `localStorage` is tied to the browser and origin. Clearing the site's browser data can remove saved bills. The application intentionally does not upload those bills to a server or database.
 
-## PWA / Installable App
-
-This version includes optional Progressive Web App support:
-
-- Web App Manifest: `static/manifest.webmanifest`
-- Service Worker: `static/sw.js`
-- Install button: shown when the browser exposes the PWA install prompt
-- Offline app-shell caching for the main billing screen
-- The application shell is cached for offline startup; billing and package data remain local to the browser
-- Standalone app mode on supported browsers
-
-### Installing
-
-Open the application in a supported browser and use **Install App** when the browser offers installation.
-
-For normal PWA installation, the app must be served from **HTTPS**. Browsers also allow installation during local development from `localhost` / `127.0.0.1`. A plain HTTP address on another device over a LAN is generally not an installable secure context.
-
-PWA support is optional: the normal browser version and printing workflow continue to work without installation.
+**BLSSNVJ21 — Browser Storage Only.**
