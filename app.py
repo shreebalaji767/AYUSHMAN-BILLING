@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import secrets
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
@@ -16,7 +15,6 @@ def add_security_headers(response):
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-    nonce = getattr(request, "_csp_nonce", "")
     response.headers.setdefault(
         "Content-Security-Policy",
         "default-src 'self'; "
@@ -24,7 +22,7 @@ def add_security_headers(response):
         "form-action 'self'; "
         "frame-ancestors 'self'; "
         "object-src 'none'; "
-        f"script-src 'self' 'nonce-{nonce}'; "
+        "script-src 'self'; "
         "style-src 'self'; "
         "img-src 'self' data:; "
         "font-src 'self'; "
@@ -40,14 +38,9 @@ def add_security_headers(response):
     return response
 
 
-@app.before_request
-def set_csp_nonce():
-    request._csp_nonce = secrets.token_urlsafe(16)
-
-
 @app.route("/")
 def index():
-    return render_template("index.html", csp_nonce=request._csp_nonce)
+    return render_template("index.html")
 
 
 @app.get("/sw.js")
@@ -81,7 +74,7 @@ def health():
     return jsonify({
         "status": "ok",
         "service": "BLSSNVJ21",
-        "version": "2026.10.5",
+        "version": "2026.10.6",
         "storage": "browser-only"
     })
 
