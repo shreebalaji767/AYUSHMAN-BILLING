@@ -72,7 +72,7 @@ def sitemap():
     return Response(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
-        f"<url><loc>{request.url_root}</loc></url>"
+        f"<url><loc>{request.url_root}</loc><lastmod>2026-10-01</lastmod></url>"
         "</urlset>",
         mimetype="application/xml"
     )
@@ -83,7 +83,7 @@ def health():
     return jsonify({
         "status": "ok",
         "service": "BLSSNVJ21",
-        "version": "2026.10.8",
+        "version": "2026.10.9",
         "storage": "browser-only"
     })
 
