@@ -1,10 +1,10 @@
-const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.5";
+const CACHE_NAME = "BLSSNVJ21-ayushman-billing-v2026.10.7";
 
 const APP_SHELL = [
   "/",
-  "/static/css/style.css",
-  "/static/css/print.css",
-  "/static/js/app.js",
+  "/static/css/style.css?v=2026.10.7",
+  "/static/css/print.css?v=2026.10.7",
+  "/static/js/app.js?v=2026.10.7",
   "/static/manifest.webmanifest",
   "/static/icons/icon-192.svg",
   "/static/icons/icon-512.svg",
