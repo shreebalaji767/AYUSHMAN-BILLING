@@ -793,6 +793,34 @@
 
 
         <!-- =================================================
+             LOCAL STORAGE CENTER
+        ================================================== -->
+
+        <section class="section-card storage-center" aria-labelledby="storageCenterTitle">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title" id="storageCenterTitle">Browser Storage</h2>
+                    <p class="section-help">All bill data stays on this device in this browser. Nothing is saved to the server.</p>
+                </div>
+                <span class="storage-badge" id="storageCenterStatus">Local Only</span>
+            </div>
+
+            <div class="storage-center-grid">
+                <button type="button" class="btn btn-secondary" id="exportPackageMasterBtn">Export Package Master</button>
+                <button type="button" class="btn btn-secondary" id="importPackageMasterBtn">Import Package Master</button>
+                <button type="button" class="btn btn-secondary" id="resetPackageMasterBtn">Reset Package Master</button>
+                <button type="button" class="btn btn-danger" id="clearBrowserStorageBtn">Clear Browser Data</button>
+            </div>
+
+            <input type="file" id="packageMasterFileInput" accept=".json,application/json" hidden>
+
+            <div class="storage-summary" id="storageSummary" aria-live="polite">
+                Browser storage is used for drafts and package master data.
+            </div>
+        </section>
+
+
+        <!-- =================================================
              BOTTOM ACTIONS
         ================================================== -->
 
