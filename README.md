@@ -8,8 +8,8 @@ DB-free Ayushman billing web application for hospital billing and package manage
 - Flask 3.1.3
 - Gunicorn 26.2.0
 - HTML / CSS / JavaScript
-- JSON package master
-- No database
+- Browser `localStorage` for patient/billing drafts and package master
+- No database and no server-side patient/billing storage
 
 Python 3.14.8 is the current Python 3.14 maintenance release as of 30 September 2026. Flask 3.1.3 is the current stable Flask release; Flask 3.2 is still unreleased.
 
@@ -102,9 +102,13 @@ Adjust these values in:
 - `35mm` top header space
 - `25mm` bottom footer space
 
-## Patient data
+## Browser-only storage
 
-Patient billing information is kept in the browser while creating the bill. The current application does **not** save patient billing records on the Python server.
+All patient, billing, draft, and package-master data used by the application is stored in the browser with `localStorage`. The Flask application does not receive or persist patient/billing data.
+
+The package master is seeded into browser storage on first load. Package lookups then use browser storage only.
+
+Browser storage is origin-specific and persists across browser sessions until the user clears site data.
 
 ## Package master
 
