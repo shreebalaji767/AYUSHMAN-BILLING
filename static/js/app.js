@@ -1091,10 +1091,13 @@ async function loadPackages() {
 
         const response =
             await fetch(
-                "/static/data/packages.json",
+                "/api/packages",
                 {
                     method: "GET",
-                    cache: "no-cache"
+                    cache: "no-cache",
+                    headers: {
+                        "Accept": "application/json"
+                    }
                 }
             );
 
