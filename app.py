@@ -34,13 +34,13 @@ def add_security_headers(response):
         "Permissions-Policy",
         "camera=(), microphone=(), geolocation=(), payment=()"
     )
+    response.headers.setdefault("Cache-Control", "no-store")
     return response
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 
 @app.get("/robots.txt")
@@ -64,7 +64,12 @@ def sitemap():
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "service": "BLSSNVJ21", "version": "2026.10.1", "storage": "browser-only"})
+    return jsonify({
+        "status": "ok",
+        "service": "BLSSNVJ21",
+        "version": "2026.10.2",
+        "storage": "browser-only"
+    })
 
 
 if __name__ == "__main__":
