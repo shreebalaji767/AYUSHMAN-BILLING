@@ -1211,68 +1211,51 @@ window.addEventListener("appinstalled", function () {
    ENTER KEY SUPPORT
 ============================================================ */
 
-document.addEventListener(
-    "keydown",
-    function (event) {
+document.addEventListener("keydown", function (event) {
+    if (event.target && event.target.tagName === "TEXTAREA") return;
 
-        /*
-           Do not interfere with textarea.
-        */
+    if (event.key === "Enter" && event.target && event.target.closest("#billingTable")) {
+        const row = event.target.closest("tr");
+        if (!row) return;
 
-        if (
-            event.target &&
-            event.target.tagName ===
-            "TEXTAREA"
-        ) {
+        const inputs = Array.from(row.querySelectorAll("input"));
+        const currentIndex = inputs.indexOf(event.target);
 
+        if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
+            event.preventDefault();
+            inputs[currentIndex + 1].focus();
             return;
-
         }
 
+        if (currentIndex === inputs.length - 1) {
+            event.preventDefault();
+            addBillingRow();
+        }
+    }
+});
 
-        /*
-           Enter in billing table:
-           create a new row when pressed
-           from the last editable field.
-        */
+/* ============================================================
+   PWA INSTALL + SERVICE WORKER
+============================================================ */
 
-        if (
-            event.key === "Enter" &&
-            event.target &&
-            event.target.closest(
-                "#billingTable"
-            )
-        ) {
+window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    const button = document.getElementById("installPwaBtn");
+    if (button) button.hidden = false;
+});
 
-            const row =
-                event.target.closest(
-                    "tr"
-                );
+window.addEventListener("appinstalled", function () {
+    deferredInstallPrompt = null;
+    const button = document.getElementById("installPwaBtn");
+    if (button) button.hidden = true;
+});
 
+window.addEventListener("load", function () {
+    if (!("serviceWorker" in navigator)) return;
 
-            if (!row) {
-                return;
-            }
-
-
-            const inputs =
-                Array.from(
-                    row.querySelectorAll(
-                        "input"
-                    )
-                );
-
-
-            const currentIndex =
-                inputs.indexOf(
-                    event.target
-                );
-
-
-            /*
-               Move to next field.
-            */
-
-            if (
-                currentIndex >= 0 &&
-                currentIndex <
+    navigator.serviceWorker.register("/sw.js", { scope: "/" })
+        .catch(function (error) {
+            console.warn("PWA service worker registration failed:", error);
+        });
+});
