@@ -1,4 +1,4 @@
-const CACHE_NAME = "ayushman-billing-v2";
+const CACHE_NAME = "blssnvj21-ayushman-billing-v3";
 
 const APP_SHELL = [
   "/",
@@ -41,21 +41,6 @@ self.addEventListener("fetch", (event) => {
   }
 
   const url = new URL(request.url);
-
-  if (url.pathname === "/api/packages") {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || Response.json([])))
-    );
-    return;
-  }
 
   if (request.mode === "navigate") {
     event.respondWith(
