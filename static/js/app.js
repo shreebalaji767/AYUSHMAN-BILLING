@@ -1,7 +1,7 @@
 /* BLSSNVJ21 Ayushman Billing — stable client runtime */
 "use strict";
 
-const APP_VERSION = "2026.10.8";
+const APP_VERSION = "2026.10.9";
 const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
 
@@ -125,6 +125,7 @@ function createInput(valueToSet, placeholder) {
     input.type = "text";
     input.value = valueToSet ?? "";
     input.placeholder = placeholder;
+    input.setAttribute("aria-label", placeholder);
     input.autocomplete = "off";
     input.spellcheck = false;
     return input;
@@ -170,6 +171,7 @@ function addRow(data = {}, focus = true) {
     del.className = "delete-row";
     del.textContent = "Delete";
     del.setAttribute("aria-label", "Delete billing row");
+    del.title = "Delete billing row";
     del.addEventListener("click", () => deleteRow(row));
 
     action.appendChild(del);
