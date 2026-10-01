@@ -28,8 +28,9 @@
    GLOBAL APPLICATION STATE
 ============================================================ */
 
-const APP_VERSION = "2026.10.3";
-const BILL_SCHEMA_VERSION = 2;
+const APP_VERSION = "2026.10.4";
+const BILL_SCHEMA_VERSION = 3;
+let deferredInstallPrompt = null;
 
 let billingRowNumber = 0;
 let billDirty = false;
@@ -61,8 +62,6 @@ function initializeApplication() {
 
     restoreDraft();
 
-    markBillClean();
-
     /*
        Browser storage is manual only.
        Nothing is saved until the user presses Save.
@@ -92,6 +91,15 @@ function initializeApplication() {
 ============================================================ */
 
 function bindButtons() {
+
+    const installPwaBtn = document.getElementById("installPwaBtn");
+    if (installPwaBtn) installPwaBtn.addEventListener("click", async function () {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        try { await deferredInstallPrompt.userChoice; } catch (error) { console.warn("PWA install prompt failed:", error); }
+        deferredInstallPrompt = null;
+        installPwaBtn.hidden = true;
+    });
 
     /* --------------------------------------------------------
        TOP ADD ROW
@@ -629,8 +637,8 @@ function deleteBillingRow(row) {
 
     row.remove();
 
-
     updateRowNumbers();
+    markBillDirty();
 
 }
 
@@ -1080,20 +1088,7 @@ function clearBill() {
 ============================================================ */
 
 function newBill() {
-
-    const confirmed =
-        window.confirm(
-            "Start a new bill? All current information will be cleared."
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
     clearBill();
-
 }
 
 
@@ -1199,6 +1194,18 @@ document.addEventListener(
     }
 );
 
+
+window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    const button = document.getElementById("installPwaBtn");
+    if (button) button.hidden = false;
+});
+window.addEventListener("appinstalled", function () {
+    deferredInstallPrompt = null;
+    const button = document.getElementById("installPwaBtn");
+    if (button) button.hidden = true;
+});
 
 /* ============================================================
    ENTER KEY SUPPORT
