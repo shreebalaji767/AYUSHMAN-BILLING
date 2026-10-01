@@ -46,7 +46,7 @@ def index():
 @app.get("/robots.txt")
 def robots():
     return Response(
-        "User-agent: *\\nAllow: /\\nSitemap: /sitemap.xml\\n",
+        "User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n",
         mimetype="text/plain"
     )
 
