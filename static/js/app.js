@@ -2200,7 +2200,11 @@ function initializeUpgradeFeatures() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);\n\nwindow.addEventListener("beforeunload", saveDraft);\nwindow.addEventListener("pagehide", saveDraft);\n
+document.addEventListener("DOMContentLoaded", initializeUpgradeFeatures);
+
+window.addEventListener("beforeunload", saveDraft);
+window.addEventListener("pagehide", saveDraft);
+
 
 /* ============================================================
    PWA SUPPORT
