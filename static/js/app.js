@@ -784,14 +784,29 @@ function getDraftData() {
 
 function saveDraft() {
     try {
+        if (!window.localStorage) {
+            throw new Error("Browser localStorage is unavailable.");
+        }
+
         const payload = getDraftData();
         payload.meta = {
             app: "BLSSNVJ21",
-            version: APP_VERSION || "2026.10",
+            version: APP_VERSION || "2026.10.1",
             schemaVersion: BILL_SCHEMA_VERSION || 2,
             savedAt: new Date().toISOString()
         };
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+
+        const serialized = JSON.stringify(payload);
+
+        // SAVE BUTTON = explicit browser-storage save.
+        window.localStorage.setItem(STORAGE_KEY, serialized);
+
+        // Verify that the browser actually stored the bill.
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (stored !== serialized) {
+            throw new Error("Browser storage verification failed.");
+        }
+
         markBillClean();
 
         const saveButton = document.getElementById("saveBillBtn");
@@ -800,10 +815,10 @@ function saveDraft() {
             saveButton.dataset.saved = "true";
         }
 
-        setStorageStatus("Saved locally", "saved");
+        setStorageStatus("Saved to browser storage", "saved");
     } catch (error) {
-        console.warn("Browser storage unavailable:", error);
-        setStorageStatus("Local save unavailable", "error");
+        console.warn("Unable to save bill to browser storage:", error);
+        setStorageStatus("Save failed — browser storage unavailable", "error");
     }
 }
 
@@ -860,16 +875,17 @@ function restoreDraft() {
 ============================================================ */
 
 function initializeManualSaveState() {
-    const fields = document.querySelectorAll("input, textarea, select");
-
-    fields.forEach(function (field) {
-        field.addEventListener("input", function () {
+    // Delegated listeners also cover billing rows added after page load.
+    document.addEventListener("input", function (event) {
+        if (event.target.matches("input, textarea, select")) {
             markBillDirty();
-        });
+        }
+    });
 
-        field.addEventListener("change", function () {
+    document.addEventListener("change", function (event) {
+        if (event.target.matches("input, textarea, select")) {
             markBillDirty();
-        });
+        }
     });
 
     window.addEventListener("beforeunload", function (event) {
