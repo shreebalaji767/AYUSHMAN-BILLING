@@ -20,6 +20,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate static application JavaScript
+        run: node --check static/js/app.js
+      - name: Validate static site entry points
+        run: |
+          test -s index.html
+          test -s static/css/style.css
+          test -s static/css/print.css
+          test -s static/js/app.js
+          test -s sw.js
+          python -c "import json; json.load(open('static/manifest.webmanifest', encoding='utf-8')); json.load(open('data/packages.json', encoding='utf-8'))"
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
