@@ -119,7 +119,7 @@
 
     <link
         rel="stylesheet"
-        href="./static/css/style.css?v=2026.11.15.6"
+        href="./static/css/style.css?v=2026.11.15.7"
     >
 
 
@@ -182,6 +182,11 @@
                 </button>
                 <button type="button" class="btn btn-primary" id="addRowBtn">+ Add Row</button>
                 <button type="button" class="btn btn-success" id="printBtn">Print / PDF</button>
+                <button type="button" class="btn btn-primary install-app-btn" id="installPwaBtn" hidden
+                    title="Install this app on your device">
+                    <span class="install-app-icon" aria-hidden="true">↓</span>
+                    <span>Install App</span>
+                </button>
             </div>
 
             <div class="status-group">
@@ -215,16 +220,6 @@
                 </button>
             </div>
             <input type="file" id="importBillFile" accept=".json,application/json" hidden>
-            <button
-                type="button"
-                class="btn btn-primary"
-                id="installPwaBtn"
-                hidden
-            >
-                Install App
-            </button>
-
-
         </div>
 
 
