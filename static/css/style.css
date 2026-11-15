@@ -2088,3 +2088,46 @@ body{background:#f3f5f7}
 @media (max-width: 420px) {
     .topbar-actions > .data-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* PWA install action uses the same grouped button language */
+#installPwaBtn[hidden] { display: none !important; }
+#installPwaBtn.install-app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #c9dcfa;
+    border-radius: 6px;
+    background: #eaf2ff;
+    color: #205b9c;
+    font-size: 10px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+#installPwaBtn.install-app-btn:hover {
+    background: #dceaff;
+    border-color: #a9c9f4;
+}
+.install-app-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    background: #d4e5ff;
+    font-size: 14px;
+    font-weight: 800;
+}
+@media (max-width: 760px) {
+    #installPwaBtn.install-app-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 40px;
+        height: 40px;
+        padding: 0 5px;
+    }
+}
