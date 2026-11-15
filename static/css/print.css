@@ -62,8 +62,11 @@ body {
 ============================================================ */
 
 .no-print,
+.topbar,
+.topbar-brand,
 .topbar-actions,
 .bottom-actions,
+.screen-footer,
 .delete-row,
 .add-row,
 .action-column,
