@@ -2466,3 +2466,57 @@ button, input, select, textarea {
         transition-duration: .01ms !important;
     }
 }
+
+
+/* Compact toolbar buttons on narrow screens without changing desktop sizing */
+@media (max-width: 760px) {
+    .bill-action-group .btn,
+    .topbar-actions > .data-tools .btn.btn-data,
+    #installPwaBtn.install-app-btn {
+        min-height: 36px;
+        height: 36px;
+        padding: 0 6px;
+        font-size: 10px;
+        line-height: 1.1;
+        gap: 4px;
+    }
+    .bill-action-group .save-toggle-icon,
+    .topbar-actions > .data-tools .data-tool-icon,
+    #installPwaBtn .install-app-icon {
+        width: 15px;
+        height: 15px;
+        font-size: 11px;
+    }
+    .bill-action-group { gap: 5px; }
+    .topbar-actions > .data-tools { gap: 5px; padding: 6px; }
+}
+@media (max-width: 480px) {
+    .bill-action-group .btn,
+    .topbar-actions > .data-tools .btn.btn-data,
+    #installPwaBtn.install-app-btn {
+        min-height: 34px;
+        height: 34px;
+        padding-inline: 4px;
+        font-size: 9px;
+    }
+    .bill-action-group .save-toggle-icon,
+    .topbar-actions > .data-tools .data-tool-icon,
+    #installPwaBtn .install-app-icon {
+        width: 14px;
+        height: 14px;
+        font-size: 10px;
+    }
+}
+@media (max-width: 340px) {
+    .bill-action-group .btn,
+    .topbar-actions > .data-tools .btn.btn-data,
+    #installPwaBtn.install-app-btn {
+        min-height: 32px;
+        height: 32px;
+        padding-inline: 3px;
+        font-size: 8px;
+    }
+    .bill-action-group .save-toggle-icon,
+    .topbar-actions > .data-tools .data-tool-icon,
+    #installPwaBtn .install-app-icon { display: none; }
+}
