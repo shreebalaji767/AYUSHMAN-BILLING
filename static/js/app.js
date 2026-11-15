@@ -576,7 +576,7 @@ function bindUI() {
 async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
     try {
-        const registration = await navigator.serviceWorker.register("./sw.js?v=2026.11.15.3", { scope: "./" });
+        const registration = await navigator.serviceWorker.register("./sw.js?v=2026.11.15.4", { scope: "./" });
         await registration.update();
         if (registration.waiting) {
             registration.waiting.postMessage({ type: "SKIP_WAITING" });
