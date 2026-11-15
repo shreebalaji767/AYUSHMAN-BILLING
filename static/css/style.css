@@ -1912,3 +1912,60 @@ body{background:#f3f5f7}
 @media (prefers-reduced-motion: reduce) {
     .btn.btn-data { transition:none; }
 }
+
+
+/* Unified animated button system (vanilla SaveToggle interaction) */
+.btn, button.btn, .delete-row {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease,
+        border-color .18s ease, color .18s ease, opacity .18s ease;
+}
+.btn:not(:disabled):hover, .delete-row:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 11px rgba(22, 42, 62, .13);
+    opacity: 1;
+}
+.btn:not(:disabled):active, .delete-row:not(:disabled):active {
+    transform: translateY(0) scale(.98);
+    box-shadow: 0 1px 3px rgba(22,42,62,.10);
+}
+.btn:focus-visible, .delete-row:focus-visible {
+    outline: 3px solid rgba(40,105,165,.25);
+    outline-offset: 2px;
+}
+.btn:disabled { cursor: wait; opacity: .82; }
+.save-toggle-icon {
+    display:inline-grid;
+    place-items:center;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:rgba(255,255,255,.18);
+    font-size:12px;
+    line-height:1;
+}
+#saveBillBtn { min-width:88px; gap:7px; }
+#saveBillBtn .save-toggle-icon { transition: transform .25s ease, background .25s ease; }
+#saveBillBtn.is-loading .save-toggle-icon {
+    color:transparent;
+    border:2px solid rgba(255,255,255,.45);
+    border-top-color:#fff;
+    background:transparent;
+    animation: save-toggle-spin .7s linear infinite;
+}
+#saveBillBtn.is-saved { background:#176b48; border-color:#176b48; }
+#saveBillBtn.is-saved .save-toggle-icon {
+    color:#176b48;
+    background:#fff;
+    transform:scale(1.08);
+}
+#saveBillBtn.is-error { background:#a83232; border-color:#a83232; }
+#saveBillBtn.is-error .save-toggle-icon { background:rgba(255,255,255,.2); }
+@keyframes save-toggle-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .btn, .delete-row, #saveBillBtn .save-toggle-icon { transition:none; animation:none!important; }
+}
