@@ -12,6 +12,8 @@ const LEGACY_STORAGE_KEYS = [
 let rowSequence = 0;
 let billDirty = false;
 let installPrompt = null;
+let saveToggleTimer = null;
+let saveResetTimer = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -36,8 +38,7 @@ function setStatus(message, state = "ready") {
 function markDirty() {
     billDirty = true;
     setStatus("Unsaved changes", "dirty");
-    const save = $("saveBillBtn");
-    if (save) save.textContent = "Save";
+    resetSaveToggle();
 }
 
 function markClean(message = "Saved to browser storage") {
@@ -102,24 +103,64 @@ function getDraft() {
     return draft;
 }
 
+function resetSaveToggle() {
+    clearTimeout(saveToggleTimer);
+    clearTimeout(saveResetTimer);
+    const button = $("saveBillBtn");
+    if (!button) return;
+    button.dataset.state = "idle";
+    button.dataset.saved = "false";
+    button.classList.remove("is-loading", "is-saved", "is-error");
+    const label = button.querySelector(".save-toggle-label");
+    if (label) label.textContent = "Save";
+    button.disabled = false;
+}
+
 function saveDraft() {
+    const button = $("saveBillBtn");
+    if (button) {
+        clearTimeout(saveToggleTimer);
+        clearTimeout(saveResetTimer);
+        button.disabled = true;
+        button.dataset.state = "loading";
+        button.classList.remove("is-saved", "is-error");
+        button.classList.add("is-loading");
+        const label = button.querySelector(".save-toggle-label");
+        if (label) label.textContent = "Saving";
+    }
     try {
         if (!storageAvailable()) throw new Error("localStorage unavailable");
         const serialized = JSON.stringify(getDraft());
         localStorage.setItem(STORAGE_KEY, serialized);
-
         if (localStorage.getItem(STORAGE_KEY) !== serialized) {
             throw new Error("storage verification failed");
         }
-
-        const button = $("saveBillBtn");
-        if (button) {
-            button.textContent = "Saved ✓";
-            button.dataset.saved = "true";
-        }
         markClean();
+        if (button) {
+            saveToggleTimer = setTimeout(() => {
+                button.disabled = false;
+                button.classList.remove("is-loading");
+                button.classList.add("is-saved");
+                button.dataset.state = "success";
+                button.dataset.saved = "true";
+                const label = button.querySelector(".save-toggle-label");
+                if (label) label.textContent = "Saved";
+                saveResetTimer = setTimeout(() => {
+                    if (!billDirty) resetSaveToggle();
+                }, 1000);
+            }, 1200);
+        }
     } catch (error) {
         console.error("BLSSNVJ21 save error:", error);
+        if (button) {
+            button.disabled = false;
+            button.classList.remove("is-loading");
+            button.classList.add("is-error");
+            button.dataset.state = "error";
+            const label = button.querySelector(".save-toggle-label");
+            if (label) label.textContent = "Retry";
+            saveResetTimer = setTimeout(resetSaveToggle, 1800);
+        }
         setStatus("Save failed — browser storage unavailable", "error");
     }
 }
@@ -243,11 +284,7 @@ function clearBill(confirmFirst = true) {
     } catch (_) {}
     billDirty = false;
     setStatus("New bill — not saved", "ready");
-    const save = $("saveBillBtn");
-    if (save) {
-        save.textContent = "Save";
-        save.dataset.saved = "false";
-    }
+    resetSaveToggle();
 }
 
 function readStoredDraft() {
