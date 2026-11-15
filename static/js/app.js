@@ -1,7 +1,7 @@
 /* BLSSNVJ21 Ayushman Billing — stable client runtime */
 "use strict";
 
-const APP_VERSION = "2026.10.11";
+const APP_VERSION = "2026.11.15";
 const BILL_SCHEMA_VERSION = 4;
 const STORAGE_KEY = "BLSSNVJ21_AYUSHMAN_BILLING_DRAFT_V1";
 const LEGACY_STORAGE_KEYS = [
@@ -401,7 +401,7 @@ function bindUI() {
 async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
     try {
-        const registration = await navigator.serviceWorker.register("/sw.js?v=2026.10.11", { scope: "/" });
+        const registration = await navigator.serviceWorker.register("./sw.js?v=2026.11.15", { scope: "./" });
         await registration.update();
         if (registration.waiting) {
             registration.waiting.postMessage({ type: "SKIP_WAITING" });
