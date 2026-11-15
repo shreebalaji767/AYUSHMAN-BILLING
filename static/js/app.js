@@ -316,10 +316,11 @@ function applyDraft(draft) {
     if (draft.meta?.app && draft.meta.app !== "BLSSNVJ21") {
         throw new Error("This JSON file belongs to a different application");
     }
-    if (!draft.patient || typeof draft.patient !== "object" ||
-        !draft.totals || typeof draft.totals !== "object" ||
-        !Array.isArray(draft.rows)) {
-        throw new Error("Backup must contain patient, totals and rows data");
+    if (!draft.patient || typeof draft.patient !== "object" || Array.isArray(draft.patient) ||
+        !draft.totals || typeof draft.totals !== "object" || Array.isArray(draft.totals) ||
+        !Array.isArray(draft.rows) || draft.rows.length > 500 ||
+        draft.rows.some((row) => !row || typeof row !== "object" || Array.isArray(row))) {
+        throw new Error("Backup must contain valid patient, totals and billing rows data");
     }
 
     const patientIds = [
