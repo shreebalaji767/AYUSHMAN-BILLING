@@ -2131,3 +2131,338 @@ body{background:#f3f5f7}
         padding: 0 5px;
     }
 }
+
+
+/* ============================================================
+   RESPONSIVE LAYOUT LAYER — desktop, tablet, mobile & touch
+   Keeps the billing grid usable through its own horizontal
+   scroller rather than shrinking its editable columns.
+============================================================ */
+html {
+    width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+    scroll-padding-top: 12px;
+}
+body, .app-shell, .page-container, .section-card,
+.topbar, .topbar-actions, .billing-section, .billing-totals {
+    min-width: 0;
+    max-width: 100%;
+}
+img, svg, video, canvas {
+    max-width: 100%;
+}
+button, input, select, textarea {
+    max-width: 100%;
+}
+.topbar {
+    flex-wrap: wrap;
+}
+.topbar-brand {
+    flex: 0 1 auto;
+    overflow-wrap: anywhere;
+}
+.topbar-actions {
+    flex: 1 1 680px;
+    min-width: 0;
+}
+.bill-action-group,
+.status-group,
+.data-tools {
+    min-width: 0;
+}
+.page-container {
+    margin-inline: auto;
+}
+.section-card,
+.form-field,
+.patient-grid > *,
+.billing-total-row > * {
+    min-width: 0;
+}
+.form-field input,
+.form-field select,
+.form-field textarea,
+.remarks-section textarea,
+.billing-total-row input {
+    width: 100%;
+    min-width: 0;
+}
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+#billingTable {
+    width: max(100%, 1320px);
+}
+.billing-total-row {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 300px);
+}
+.remarks-section {
+    min-width: 0;
+}
+.bottom-actions {
+    display: flex;
+    flex-wrap: wrap;
+}
+.bottom-actions > * {
+    min-width: 0;
+}
+.screen-footer {
+    padding-inline: max(12px, env(safe-area-inset-left));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 1100px) {
+    .topbar {
+        align-items: stretch;
+        gap: 10px;
+    }
+    .topbar-brand {
+        flex: 1 1 100%;
+    }
+    .topbar-actions {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: 100%;
+        justify-content: flex-start;
+    }
+    .bill-action-group {
+        flex: 1 1 420px;
+    }
+    .status-group {
+        flex: 1 1 160px;
+    }
+    .data-tools {
+        flex: 1 1 300px;
+    }
+    .patient-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .patient-grid .form-field,
+    .patient-grid .form-field.wide {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar {
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
+    .topbar-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, .8fr);
+        gap: 8px;
+    }
+    .bill-action-group {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+    .bill-action-group .btn,
+    .data-tools .btn {
+        min-width: 0;
+        width: 100%;
+        min-height: 44px;
+        height: auto;
+        padding: 8px 6px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.2;
+    }
+    .status-group {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-height: 56px;
+    }
+    .data-tools {
+        grid-column: 1 / -1;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .page-container {
+        width: calc(100% - 16px);
+        padding-top: 10px;
+    }
+    .section-card {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    .patient-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+    .patient-grid .form-field,
+    .patient-grid .form-field.wide {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 5px;
+    }
+    .patient-grid .form-field label {
+        text-align: left;
+        white-space: normal;
+    }
+    .patient-grid input,
+    .patient-grid select,
+    .patient-grid textarea,
+    .remarks-section textarea,
+    .billing-total-row input {
+        min-height: 44px;
+        font-size: 16px;
+    }
+    .table-container {
+        width: 100%;
+        margin: 0;
+        border-radius: 6px;
+        touch-action: pan-x pan-y;
+    }
+    #billingTable {
+        min-width: 1320px;
+    }
+    #billingTable input[type="text"],
+    #billingTable input[type="number"] {
+        min-height: 42px;
+        height: 42px;
+        font-size: 16px;
+    }
+    .billing-totals {
+        width: 100%;
+        max-width: none;
+    }
+    .billing-total-row {
+        grid-template-columns: minmax(0, 1fr) minmax(130px, .85fr);
+        gap: 8px;
+        padding: 9px;
+    }
+    .billing-total-row > label,
+    .billing-total-row > span {
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+    .bottom-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .bottom-actions .btn {
+        width: 100%;
+        min-height: 44px;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-title { font-size: clamp(15px, 4.5vw, 18px); }
+    .brand-subtitle {
+        font-size: 10px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+    .topbar-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .bill-action-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        padding: 6px;
+    }
+    .bill-action-group .btn {
+        min-height: 44px;
+        font-size: 11px;
+    }
+    .status-group,
+    .data-tools {
+        grid-column: 1;
+    }
+    .data-tools {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+    }
+    .data-tools-label {
+        grid-column: 1 / -1;
+    }
+    .data-tools .btn {
+        min-height: 44px;
+        font-size: 11px;
+    }
+    .page-container {
+        width: calc(100% - 12px);
+        padding: 8px 0 20px;
+    }
+    .section-card {
+        padding: 10px;
+        border-radius: 7px;
+    }
+    .section-title {
+        font-size: 12px;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+    .billing-total-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 6px;
+    }
+    .billing-total-row input[type="text"],
+    .billing-total-row input[type="number"] {
+        text-align: left;
+    }
+    .billing-total-row.payable-row input[type="text"] {
+        font-size: 16px;
+    }
+    .bottom-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 340px) {
+    .topbar { padding-inline: 7px; }
+    .page-container { width: calc(100% - 8px); }
+    .section-card { padding: 8px; }
+    .bill-action-group { gap: 5px; padding: 5px; }
+    .bill-action-group .btn,
+    .data-tools .btn {
+        padding-inline: 4px;
+        font-size: 10px;
+    }
+    .patient-grid .form-field label { font-size: 11px; }
+    .billing-total-row { padding-inline: 6px; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) and (pointer: coarse) {
+    .topbar {
+        position: relative;
+    }
+    .patient-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .table-container {
+        max-height: 65vh;
+        overflow: auto;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .btn, .delete-row {
+        min-height: 44px;
+    }
+    input, select, textarea {
+        scroll-margin-block: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
