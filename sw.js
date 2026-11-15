@@ -1,9 +1,9 @@
 /* BLSSNVJ21 static GitHub Pages service worker */
-const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15.2";
+const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15.3";
 const BASE_URL = new URL("./", self.registration.scope);
 const APP_SHELL = [
   "", "static/css/style.css?v=2026.11.15.8", "static/css/print.css?v=2026.11.15.2",
-  "static/js/app.js?v=2026.11.15.1", "static/manifest.webmanifest",
+  "static/js/app.js?v=2026.11.15.1", "static/manifest.webmanifest?v=2026.11.15.1",
   "static/icons/icon-192.svg", "static/icons/icon-512.svg", "static/icons/favicon.svg"
 ].map((path) => new URL(path, BASE_URL).toString());
 self.addEventListener("install", (event) => {
@@ -27,6 +27,19 @@ self.addEventListener("fetch", (event) => {
         return response;
       } catch (_) {
         return (await caches.match(home)) || new Response("Offline — connect once to cache the app shell.", {status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}});
+      }
+    })());
+    return;
+  }
+  const requestUrl = new URL(request.url);
+  if (requestUrl.pathname.endsWith("/static/manifest.webmanifest")) {
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(request, { cache: "no-store" });
+        if (fresh.ok) await (await caches.open(CACHE_NAME)).put(request, fresh.clone());
+        return fresh;
+      } catch (_) {
+        return (await caches.match(request)) || new Response("Manifest unavailable offline.", {status:503});
       }
     })());
     return;
