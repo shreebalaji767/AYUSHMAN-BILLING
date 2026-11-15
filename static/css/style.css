@@ -2040,3 +2040,51 @@ body{background:#f3f5f7}
     .bill-action-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .status-group { min-height: 58px; }
 }
+
+/* Match the backup/data panel to the same grouped toolbar system */
+.topbar-actions > .toolbar-group {
+    box-sizing: border-box;
+    border: 1px solid #dce3e9;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(20,35,50,.035);
+}
+.topbar-actions > .data-tools {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(66px, 1fr));
+    align-content: center;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 6px;
+    margin: 0;
+    background: #f8fafc;
+}
+.topbar-actions > .data-tools .data-tools-label {
+    grid-column: 1 / -1;
+    display: block;
+    padding: 0 3px 1px;
+    line-height: 1.2;
+}
+.topbar-actions > .data-tools .btn.btn-data {
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 8px;
+}
+@media (max-width: 1100px) {
+    .topbar-actions > .data-tools { grid-template-columns: repeat(4, minmax(58px, 1fr)); }
+}
+@media (max-width: 760px) {
+    .topbar-actions > .data-tools {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        padding: 8px;
+    }
+    .topbar-actions > .data-tools .btn.btn-data { min-height: 40px; height: 40px; }
+}
+@media (max-width: 420px) {
+    .topbar-actions > .data-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
