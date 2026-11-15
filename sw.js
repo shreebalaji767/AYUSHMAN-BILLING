@@ -1,5 +1,5 @@
 /* BLSSNVJ21 static GitHub Pages service worker */
-const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15.1";
+const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15.2";
 const BASE_URL = new URL("./", self.registration.scope);
 const APP_SHELL = [
   "", "static/css/style.css?v=2026.11.15.8", "static/css/print.css?v=2026.11.15.2",
