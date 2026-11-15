@@ -1821,3 +1821,94 @@ body{background:#f3f5f7}
 @media(max-width:360px){.topbar{padding:9px 8px}.brand-title{font-size:15px}.brand-subtitle{font-size:8px}.page-container{width:calc(100% - 8px)}.section-card{padding:8px}.topbar-actions .btn{font-size:9px;padding-inline:4px}.storage-status{font-size:9px}}
 @media(hover:none) and (pointer:coarse){.btn,.delete-row{min-height:42px}#billingTable input[type=text],#billingTable input[type=number]{min-height:40px}.patient-grid .form-field input,.billing-total-row input[type=text],.billing-total-row input[type=number]{min-height:42px}}
 @media print{.topbar{position:static!important;box-shadow:none!important}}
+
+
+/* Distinct, compact backup and data controls */
+.data-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    margin-left: 3px;
+    border: 1px solid #dce3e9;
+    border-radius: 9px;
+    background: #f5f7f9;
+}
+.data-tools-label {
+    padding: 0 7px 0 5px;
+    color: #687787;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .09em;
+    white-space: nowrap;
+}
+.btn.btn-data {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .01em;
+    white-space: nowrap;
+    box-shadow: 0 1px 1px rgba(20,35,50,.04);
+    transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+.btn.btn-data:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(20,35,50,.10);
+}
+.data-tool-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+}
+.btn-export { background:#eaf2ff; border-color:#c9dcfa!important; color:#205b9c; }
+.btn-export .data-tool-icon { background:#d4e5ff; }
+.btn-export:hover { background:#dceaff; border-color:#a9c9f4!important; }
+.btn-import { background:#e8f7f3; border-color:#bce7db!important; color:#16745f; }
+.btn-import .data-tool-icon { background:#cceee3; }
+.btn-import:hover { background:#d8f2e9; border-color:#9ddbc9!important; }
+.btn-copy { background:#fff; border-color:#d5dde5!important; color:#435467; }
+.btn-copy .data-tool-icon { background:#edf1f5; }
+.btn-copy:hover { background:#f1f5f8; border-color:#bdc9d5!important; }
+.btn-clear { background:#fff0ef; border-color:#f2c9c5!important; color:#a53d36; }
+.btn-clear .data-tool-icon { background:#ffdcda; }
+.btn-clear:hover { background:#ffe5e3; border-color:#e9aaa5!important; }
+.btn.btn-data:focus-visible { outline:3px solid rgba(40,105,165,.24); outline-offset:2px; }
+@media (max-width: 1100px) {
+    .data-tools { flex-wrap:wrap; }
+    .data-tools-label { width:100%; padding:2px 5px 0; }
+}
+@media (max-width: 760px) {
+    .data-tools {
+        grid-column: 1 / -1;
+        display:grid;
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:6px;
+        width:100%;
+        margin:2px 0 0;
+        padding:7px;
+    }
+    .data-tools-label { grid-column:1 / -1; text-align:left; }
+    .btn.btn-data { width:100%; min-width:0; padding:0 5px; font-size:10px; }
+}
+@media (max-width: 420px) {
+    .data-tools { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .btn.btn-data { min-height:40px; height:40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .btn.btn-data { transition:none; }
+}
