@@ -486,16 +486,29 @@ function bindUI() {
     $("newBillBtn")?.addEventListener("click", () => clearBill(true));
 
     $("installPwaBtn")?.addEventListener("click", async () => {
-        if (!installPrompt) return;
-        try {
-            installPrompt.prompt();
-            await installPrompt.userChoice;
-        } catch (error) {
-            console.warn("PWA install prompt failed:", error);
-        }
-        installPrompt = null;
         const button = $("installPwaBtn");
-        if (button) button.hidden = true;
+        if (installPrompt) {
+            try {
+                installPrompt.prompt();
+                const choice = await installPrompt.userChoice;
+                if (choice?.outcome === "accepted" && button) button.hidden = true;
+            } catch (error) {
+                console.warn("PWA install prompt failed:", error);
+            }
+            installPrompt = null;
+            return;
+        }
+
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+            || window.navigator.standalone === true;
+        if (isStandalone) {
+            window.alert("This app is already installed on your device.");
+        } else if (isIOS) {
+            window.alert("To install: tap Share in Safari, then choose 'Add to Home Screen'.");
+        } else {
+            window.alert("To install this app, open your browser menu (⋮ or ⋯) and choose 'Install app' or 'Add to Home screen'. If that option is not available, check that you are using the latest Chrome or Edge and open this site over HTTPS.");
+        }
     });
 
     document.addEventListener("input", (event) => {
@@ -547,7 +560,10 @@ function bindUI() {
         event.preventDefault();
         installPrompt = event;
         const button = $("installPwaBtn");
-        if (button) button.hidden = false;
+        if (button) {
+            button.hidden = false;
+            button.title = "Install this app";
+        }
     });
 
     window.addEventListener("appinstalled", () => {
