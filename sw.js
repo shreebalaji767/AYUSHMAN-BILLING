@@ -1,9 +1,9 @@
 /* BLSSNVJ21 static GitHub Pages service worker */
-const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15";
+const CACHE_NAME = "blssnvj21-ayushman-billing-v2026.11.15.1";
 const BASE_URL = new URL("./", self.registration.scope);
 const APP_SHELL = [
-  "", "static/css/style.css?v=2026.11.15", "static/css/print.css?v=2026.11.15",
-  "static/js/app.js?v=2026.11.15", "static/manifest.webmanifest",
+  "", "static/css/style.css?v=2026.11.15.8", "static/css/print.css?v=2026.11.15.2",
+  "static/js/app.js?v=2026.11.15.1", "static/manifest.webmanifest",
   "static/icons/icon-192.svg", "static/icons/icon-512.svg", "static/icons/favicon.svg"
 ].map((path) => new URL(path, BASE_URL).toString());
 self.addEventListener("install", (event) => {
