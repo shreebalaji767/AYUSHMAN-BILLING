@@ -173,51 +173,23 @@
 
         <div class="topbar-actions">
 
-
-            <button
-                type="button"
-                class="btn btn-secondary"
-                id="newBillBtn"
-            >
-                New Bill
-            </button>
-
-            <div
-                id="storageStatus"
-                class="storage-status"
-                role="status"
-                aria-live="polite"
-            >
-                Ready — not saved
+            <div class="bill-action-group" role="group" aria-label="Bill actions">
+                <button type="button" class="btn btn-secondary" id="newBillBtn">New Bill</button>
+                <button type="button" class="btn btn-success" id="saveBillBtn"
+                    title="Save this bill to browser storage (Ctrl+S)">
+                    <span class="save-toggle-icon" aria-hidden="true">✓</span>
+                    <span class="save-toggle-label">Save</span>
+                </button>
+                <button type="button" class="btn btn-primary" id="addRowBtn">+ Add Row</button>
+                <button type="button" class="btn btn-success" id="printBtn">Print / PDF</button>
             </div>
 
-            <button
-                type="button"
-                class="btn btn-success"
-                id="saveBillBtn"
-                title="Save this bill to browser storage (Ctrl+S)"
-            >
-                <span class="save-toggle-icon" aria-hidden="true">✓</span>
-                <span class="save-toggle-label">Save</span>
-            </button>
-
-
-            <button
-                type="button"
-                class="btn btn-primary"
-                id="addRowBtn"
-            >
-                + Add Row
-            </button>
-
-
-            <button
-                type="button"
-                class="btn btn-success"
-                id="printBtn"
-            >
-                Print / PDF
-            </button>
+            <div class="status-group">
+                <span class="status-group-label">STORAGE STATUS</span>
+                <div id="storageStatus" class="storage-status" role="status" aria-live="polite">
+                    Ready — not saved
+                </div>
+            </div>
 
             <div class="data-tools" role="group" aria-label="Backup and data tools">
                 <span class="data-tools-label">BACKUP &amp; DATA</span>
