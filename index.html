@@ -85,7 +85,7 @@
       "applicationCategory": "BusinessApplication",
       "applicationSubCategory": "Hospital Billing Software",
       "operatingSystem": "Web Browser",
-      "softwareVersion": "2026.10.11",
+      "softwareVersion": "2026.11.15",
       "inLanguage": "en-IN",
       "isAccessibleForFree": true,
       "description": "BLSSNVJ21 browser-based Ayushman hospital billing application with browser-only storage, editable billing rows, billing totals and print-ready billing documents.",
@@ -218,6 +218,39 @@
                 Print / PDF
             </button>
 
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="exportBillBtn"
+                title="Download a JSON backup of this bill"
+            >
+                Export JSON
+            </button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="importBillBtn"
+                title="Import a previously exported bill"
+            >
+                Import JSON
+            </button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="copyJsonBtn"
+                title="Copy the current bill as JSON"
+            >
+                Copy JSON
+            </button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="clearStorageBtn"
+                title="Clear this application's saved bill from this browser"
+            >
+                Clear Saved Data
+            </button>
+            <input type="file" id="importBillFile" accept=".json,application/json" hidden>
             <button
                 type="button"
                 class="btn btn-primary"
