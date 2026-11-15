@@ -309,6 +309,119 @@ function restoreDraft() {
     }
 }
 
+function applyDraft(draft) {
+    if (!draft || typeof draft !== "object" || Array.isArray(draft)) {
+        throw new Error("Invalid bill backup format");
+    }
+    if (draft.meta?.app && draft.meta.app !== "BLSSNVJ21") {
+        throw new Error("This JSON file belongs to a different application");
+    }
+    if (!draft.patient || typeof draft.patient !== "object" ||
+        !draft.totals || typeof draft.totals !== "object" ||
+        !Array.isArray(draft.rows)) {
+        throw new Error("Backup must contain patient, totals and rows data");
+    }
+
+    const patientIds = [
+        "ipdNo","uhid","patientName","age","sdwo","gender",
+        "maritalStatus","admissionDate","diagnosis","address"
+    ];
+    const totalIds = [
+        "totalPackageWithoutIncentives","totalAdjustedPackageAmount",
+        "totalPayableAmount","eRupiAmount","miscellaneousAmount"
+    ];
+    patientIds.forEach((id) => setValue(id, draft.patient[id] ?? ""));
+    totalIds.forEach((id) => setValue(id, draft.totals[id] ?? ""));
+    setValue("billRemarks", draft.remarks ?? "");
+
+    const body = $("billingBody");
+    if (!body) throw new Error("Billing table is unavailable");
+    body.innerHTML = "";
+    rowSequence = 0;
+    (draft.rows.length ? draft.rows : [{}]).forEach((row) => addRow(row, false));
+    renumberRows();
+    markDirty();
+    setStatus("Imported bill — review and Save", "dirty");
+}
+
+function downloadBillJson() {
+    try {
+        const json = JSON.stringify(getDraft(), null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const patient = (value("patientName") || "bill").trim().replace(/[^a-z0-9-_]+/gi, "-");
+        link.href = url;
+        link.download = `BLSSNVJ21-${patient}-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setStatus("Bill JSON exported", "saved");
+    } catch (error) {
+        console.error("BLSSNVJ21 export error:", error);
+        setStatus("JSON export failed", "error");
+    }
+}
+
+async function copyBillJson() {
+    const json = JSON.stringify(getDraft(), null, 2);
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(json);
+        } else {
+            const area = document.createElement("textarea");
+            area.value = json;
+            area.setAttribute("readonly", "");
+            area.style.position = "fixed";
+            area.style.opacity = "0";
+            document.body.appendChild(area);
+            area.select();
+            const copied = document.execCommand("copy");
+            area.remove();
+            if (!copied) throw new Error("Clipboard permission unavailable");
+        }
+        setStatus("Bill JSON copied", "saved");
+    } catch (error) {
+        console.error("BLSSNVJ21 copy error:", error);
+        setStatus("Copy failed — use Export JSON instead", "error");
+    }
+}
+
+function importBillFile(file) {
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+        setStatus("Import rejected — JSON file exceeds 2 MB", "error");
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+        try {
+            const parsed = JSON.parse(String(reader.result || ""));
+            if (billDirty && !window.confirm("Replace the current unsaved bill with this imported bill?")) return;
+            applyDraft(parsed);
+        } catch (error) {
+            console.error("BLSSNVJ21 import error:", error);
+            setStatus(error.message || "Import failed — invalid JSON", "error");
+        }
+    };
+    reader.onerror = () => setStatus("Could not read the selected JSON file", "error");
+    reader.readAsText(file);
+}
+
+function clearSavedData() {
+    if (!window.confirm("Clear this application's saved bill from this browser? This does not affect exported backup files.")) return;
+    try {
+        localStorage.removeItem(STORAGE_KEY);
+        LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+        clearBill(false);
+        setStatus("Saved bill cleared from this browser", "ready");
+    } catch (error) {
+        console.error("BLSSNVJ21 clear storage error:", error);
+        setStatus("Could not clear saved bill data", "error");
+    }
+}
+
 function printBill() {
     try {
         window.print();
@@ -323,6 +436,14 @@ function bindUI() {
     $("addBillingRowBtn")?.addEventListener("click", () => addRow());
     $("saveBillBtn")?.addEventListener("click", saveDraft);
     $("printBtn")?.addEventListener("click", printBill);
+    $("exportBillBtn")?.addEventListener("click", downloadBillJson);
+    $("importBillBtn")?.addEventListener("click", () => $("importBillFile")?.click());
+    $("importBillFile")?.addEventListener("change", (event) => {
+        importBillFile(event.target.files?.[0]);
+        event.target.value = "";
+    });
+    $("copyJsonBtn")?.addEventListener("click", copyBillJson);
+    $("clearStorageBtn")?.addEventListener("click", clearSavedData);
 
     $("newBillBtn")?.addEventListener("click", () => clearBill(true));
 
